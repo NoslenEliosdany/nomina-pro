@@ -278,3 +278,35 @@ body {
 .wsumm { flex: 1; min-width: 80px; background: var(--color-background-secondary); border-radius: 8px; padding: 6px; text-align: center; }
 .wsumm-lbl { font-size: 9px; color: var(--color-text-secondary); }
 .wsumm-val { font-size: 12px; font-weight: 700; }
+
+/* ── DIRECTORIO ───────────────────────────────────── */
+.dir-group { margin-bottom: 16px; }
+.dir-group-title { font-size: 12px; font-weight: 700; margin-bottom: 8px; letter-spacing: .5px; }
+.dir-cards { display: flex; flex-direction: column; gap: 8px; }
+.dir-card {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: 12px; padding: 10px 12px;
+}
+.dir-card-hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.dir-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.dir-apodo { font-weight: 700; font-size: 14px; }
+.dir-ag { font-size: 10px; font-weight: 700; margin-top: 1px; }
+.dir-nombres { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 6px; line-height: 1.6; }
+.dir-tels { display: flex; flex-wrap: wrap; gap: 5px; }
+.dir-tel-badge {
+  font-size: 11px; padding: 3px 9px; border-radius: 20px;
+  text-decoration: none; font-weight: 600;
+  display: inline-block;
+}
+.dir-tel-badge.lab { background: rgba(27,94,32,.12); color: #1B5E20; }
+.dir-tel-badge.per { background: rgba(13,71,161,.12); color: #0D47A1; }
+
+/* Mini directorio en card de búsqueda rápida */
+.dir-mini { margin-bottom: 8px; padding: 8px 10px; background: var(--color-background-primary); border-radius: 8px; border: 0.5px solid var(--color-border-tertiary); }
+.dir-mini-nombre { font-size: 11px; color: var(--color-text-secondary); line-height: 1.6; }
+.dir-mini-tels { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
