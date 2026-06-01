@@ -65,7 +65,8 @@ const DIRECTORIO = {
   'BAMBINO':     { nombres: ['ABRAHAM TORRES MAGANA','ANGEL HECTOR MARTINEZ ALVAREZ'], telLaboral: ['5529485920','5517817509'], telPersonal: ['5625065681'], agencia: 'BAMBINO' },
   'MAPACHE':     { nombres: ['ADRIAN AVALOS SALAZAR','PATRICIA ROSALINDA TRUJILLO MARIEL'], telLaboral: ['5529484147','5550765482'], telPersonal: ['5523400511'], agencia: 'BAMBINO' },
   'POLI':        { nombres: ['AMERICA SOTO REYES','AMERICA SOTO GONZALEZ'], telLaboral: ['5552749762','5511873728'], telPersonal: ['5572734228'], agencia: 'BAMBINO' },
-  // ── TISHA (img6) ──
+  // ── TISHA ──
+  'TISHA':       { nombres: ['MELISSA PALOMA'], telLaboral: ['5586172706'], telPersonal: [], agencia: 'TISHA' },
   'MOANA':       { nombres: ['ESTEFANIA GUADALUPE ROJAS LEYVA','KARLA ANDREA LOPEZ ROMERO'], telLaboral: ['5568938190','5664446668'], telPersonal: ['5586172706'], agencia: 'TISHA' },
   'HARLEY':      { nombres: ['ELDA JAZMIN CORTAZAR MORAN','ADRIANA GUTIERREZ ALBERTO'], telLaboral: ['5519350892','5656513905'], telPersonal: ['5549182965'], agencia: 'TISHA' },
   'SABITO':      { nombres: ['ALEJANDRA MENDOZA DE LA GUARDIA','NORMA EDITH CATALAN SERRANO'], telLaboral: ['5664446643','5530508094'], telPersonal: ['6691444565'], agencia: 'TISHA' },
@@ -73,14 +74,16 @@ const DIRECTORIO = {
   'MCLOVIN':     { nombres: ['CRISTIAN FRANCISCO ROJAS ANAYA','SERGIO VICTORIA RAMIREZ'], telLaboral: ['5551585850','5656513912'], telPersonal: ['5578402921'], agencia: 'TISHA' },
   'COME GALLETAS':{ nombres: ['PERLA AMORENE ANAYA DIAZ','ANDREA PINEDA HERNANDEZ'], telLaboral: ['5561884961','5630950170'], telPersonal: ['5525621681'], agencia: 'TISHA' },
   'NENA':        { nombres: ['ELIZABETH MERCADO SALGADO','RAQUE BUENROSRO SANCHEZ'], telLaboral: ['5528917968','5664446627'], telPersonal: ['7991410159'], agencia: 'TISHA' },
-  // ── BANELOPE (img4) ──
+  // ── BANELOPE ──
+  'BANELOPE':    { nombres: ['BANELOPE'], telLaboral: [], telPersonal: [], agencia: 'BANELOPE' },
   'ATENEA':      { nombres: ['ROSA CHRISTINA CHAVEZ NAVA','YANELLI CAROLINA QUESADA GARCIA'], telLaboral: ['5574997840'], telPersonal: [], agencia: 'BANELOPE' },
   'ZEUS':        { nombres: ['RODRIGO DURAN RODRIGUEZ','OLIVER VERGARA URBINA'], telLaboral: ['5550764613'], telPersonal: [], agencia: 'BANELOPE' },
   'POSEIDON':    { nombres: ['JOSE ANTONIO SANCHEZ ORTIZ','VICTOR HUGO LOPEZ PEREZ'], telLaboral: ['5551599549'], telPersonal: [], agencia: 'BANELOPE' },
   'ARTEMISA':    { nombres: ['ADRIANA OVALLE DE LA ROSA','SANDRA DIAS FFERNANDES'], telLaboral: ['5522980373','5522693742'], telPersonal: [], agencia: 'BANELOPE' },
   'CRONNOS':     { nombres: ['GERMAN VARELA GARCIA'], telLaboral: ['5611705147'], telPersonal: [], agencia: 'BANELOPE' },
   'AFRODITA':    { nombres: ['ZULEMA BETZAI CHARMICHART ALMANZA'], telLaboral: ['5618520259'], telPersonal: [], agencia: 'BANELOPE' },
-  // ── BATMAN (img3) ──
+  // ── BATMAN ──
+  'BATMAN':      { nombres: ['JESUS CUETO'], telLaboral: [], telPersonal: [], agencia: 'BATMAN' },
   'PANTHER':     { nombres: ['ALEJANDRO ENCINAS NAJERA','GUILLERMO ISRAEL ALMORES MEDINA'], telLaboral: ['5535517393','5535020314'], telPersonal: ['5582263437'], agencia: 'BATMAN' },
   'DONATO':      { nombres: ['RUBEN DONATO BARRON GARCIA','ABRAHAM TORRES MAGAÑA'], telLaboral: ['5551731315','5561885020'], telPersonal: ['5615183872'], agencia: 'BATMAN' },
   'BLESSED':     { nombres: ['JESUS ANDRES ORTIZ GOMEZ','RAFAEL MONTES PONCE','ABELARDO LEYVA RODRIGUEZ'], telLaboral: ['5638032077','5511990458','5656024111'], telPersonal: ['5560063089'], agencia: 'BATMAN' },
@@ -88,7 +91,8 @@ const DIRECTORIO = {
   'BLUE':        { nombres: ['EDUARDO REYES GOMEZ'], telLaboral: ['5518707844'], telPersonal: ['5515697933'], agencia: 'BATMAN' },
   'FRIO':        { nombres: ['SAMUEL RAZO MORALES'], telLaboral: ['5554604021','5645926339'], telPersonal: ['7442083048'], agencia: 'BATMAN' },
   'CHUCKY':      { nombres: ['DEBORA PALAFOX ISLAS','ABIGAIL RODRIGUEZ ZAPATA'], telLaboral: ['5662667230','5549429848'], telPersonal: ['5611376584'], agencia: 'BATMAN' },
-  // ── GROOT (img7) ──
+  // ── GROOT ──
+  'GROOT':       { nombres: ['CARLOS PATTERSON OLIVAS','JORGE ADRIAN GOMEZ'], telLaboral: ['5522641318'], telPersonal: ['5510744003'], agencia: 'GROOT' },
   'DEADPOL':          { nombres: ['ABEL EMILIO CASTORENA'], telLaboral: ['5527524080'], telPersonal: ['7221655529'], agencia: 'GROOT' },
   'SCARLET WISH':     { nombres: ['PILAR HERNANDEZ TRINIDAD'], telLaboral: ['5561493116'], telPersonal: ['5530847902'], agencia: 'GROOT' },
   'CAPITANA MARVEL':  { nombres: ['LAURA LETICIA JUAREZ JIMENEZ'], telLaboral: ['5551561031'], telPersonal: ['5610289129'], agencia: 'GROOT' },
@@ -98,21 +102,20 @@ const DIRECTORIO = {
   'BLACK PANTHER':    { nombres: ['ANTONIO MOISES CAMPOS GOMEZ'], telLaboral: ['5626847060'], telPersonal: [], agencia: 'GROOT' },
   'JEAN GREY':        { nombres: ['MARTHA ADRIANA RUIZ ALVARADO','HAYDEE SANCHEZ VARGAS'], telLaboral: ['5522689270','5534951821'], telPersonal: ['5619278400'], agencia: 'GROOT' },
   'CAPITAN AMERICA':  { nombres: ['MARCO ANTONIO HERNANDEZ MARTINEZ'], telLaboral: ['5514926718'], telPersonal: ['5521911935'], agencia: 'GROOT' },
-  // ── MARVEL (img5) ──
+  // ── MARVEL ──
+  'MARVEL':      { nombres: ['MARVEL'], telLaboral: [], telPersonal: [], agencia: 'MARVEL' },
   'FLAME KING':  { nombres: ['ANA LESSLY MONTERO','ADRIANA SALAZAR MONDRAGON'], telLaboral: ['5575015142'], telPersonal: ['5647419043'], agencia: 'MARVEL' },
   'MENTITA':     { nombres: ['ADRIAN TAPIA MARTINEZ','ALEJANDRO VERGUEZ HERNANDEZ'], telLaboral: ['5554606574'], telPersonal: ['7774974770'], agencia: 'MARVEL' },
   'GRUMOSA':     { nombres: ['ALEJANDRA VERGARA PEREZ','HAYDEE VARGAS SANCHEZ'], telLaboral: ['5534952498'], telPersonal: ['5553205960'], agencia: 'MARVEL' },
   'MARCELINNE':  { nombres: ['VIRIDIANA SANCHEZ GAMBOA','VERONICA VALENCIA SANCHEZ','DIANA SANCHEZ CRUZ'], telLaboral: ['5522590829','5517800417','5521797804'], telPersonal: ['5576125675'], agencia: 'MARVEL' },
   'BEEMO':       { nombres: ['ADRIAN ENRIQUE SANTILLAN'], telLaboral: ['5549169156','5548718635'], telPersonal: ['5615044254'], agencia: 'MARVEL' },
   'FINN':        { nombres: ['CARLOS PATTERSON','ARMANDO MEXICANO'], telLaboral: ['5548949466','5538976200'], telPersonal: ['5567610239'], agencia: 'MARVEL' },
-  // ── MARCELINE (img2) ──
+  // ── MARCELINE ──
+  'MARCELINE':   { nombres: ['WUERO / ALEJANDRA CAROLINA GARCIA RAMOS'], telLaboral: ['5517958269'], telPersonal: [], agencia: 'MARCELINE' },
   'VIUDA NEGRA': { nombres: ['ALEJANDRA CAROLINA GARCIA RAMOS','MARIA MAGDALENA'], telLaboral: ['5527529308'], telPersonal: ['5517958269'], agencia: 'MARCELINE' },
   'LA BARBIE':   { nombres: ['HECTOR GARCIA ROMERO','JUAN CARLOS ELIZALDE ARMANDO REYES VAZQUEZ'], telLaboral: ['5519333569'], telPersonal: ['5583375354'], agencia: 'MARCELINE' },
   'EL CHAPO':    { nombres: ['KELLY OLVERA','ARTURO SALINAS'], telLaboral: ['5534956967'], telPersonal: ['4242562046'], agencia: 'MARCELINE' },
 };
-
-const DAYS       = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-const DAYS_SHORT = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
 
 // ── ESTADO GLOBAL ─────────────────────────────────────
 let AGENCIES    = [];
