@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nómina Pro</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── BÚSQUEDA RÁPIDA ─────────────────────────── -->
+  <div class="page active" id="page-search">
+    <div class="topbar">
+      <h1>Búsqueda rápida</h1>
+      <span class="week-pill" id="wl-search"></span>
+    </div>
+    <div class="search-box">
+      <i class="ti ti-search search-icon" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="Buscar asesor o gerente..." oninput="renderSearch()" autocomplete="off">
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+
+  <!-- ── CAPTURA ─────────────────────────────────── -->
+  <div class="page" id="page-captura">
+    <div class="topbar">
+      <h1>Nóminas</h1>
+      <span class="week-pill" id="wl-cap"></span>
+    </div>
+    <div class="ag-tabs" id="ag-tabs"></div>
+    <div class="day-tabs" id="day-tabs"></div>
+    <div id="members-view"></div>
+    <div class="totals-grid" id="ag-totals"></div>
+    <div class="action-row">
+      <button class="act-btn" onclick="copyWA()">Copiar WhatsApp</button>
+      <button class="act-btn green" onclick="exportXLSX()">Exportar Excel</button>
+    </div>
+    <span class="reset-link" onclick="resetWeek()">Iniciar nueva semana</span>
+  </div>
+
+  <!-- ── DASHBOARD ───────────────────────────────── -->
+  <div class="page" id="page-dash">
+    <div class="topbar">
+      <h1>Dashboard</h1>
+      <span class="week-pill" id="wl-dash"></span>
+    </div>
+    <div class="metric-grid" id="dash-metrics"></div>
+    <div class="section-title">Producción por agencia</div>
+    <div id="dash-bars" style="margin-bottom:14px"></div>
+    <div class="section-title">Distribución de producción</div>
+    <div class="pie-wrap">
+      <canvas id="pie-canvas" width="120" height="120" style="flex-shrink:0"></canvas>
+      <div class="pie-legend" id="pie-legend"></div>
+    </div>
+    <div class="section-title">Ranking asesores</div>
+    <div id="dash-ranking"></div>
+  </div>
+
+  <!-- ── HISTORIAL ───────────────────────────────── -->
+  <div class="page" id="page-hist">
+    <div class="topbar"><h1>Historial</h1></div>
+    <div id="hist-content"></div>
+  </div>
+
+  <!-- ── CONFIGURACIÓN ───────────────────────────── -->
+  <div class="page" id="page-cfg">
+    <div class="topbar"><h1>Configuración</h1></div>
+    <div class="cfg-section">
+      <div class="cfg-title">
+        <i class="ti ti-users" aria-hidden="true"></i> Equipos por agencia
+      </div>
+      <div id="cfg-agencies"></div>
+      <button class="save-btn" style="background:#1B5E20" onclick="saveConfig()">Guardar cambios</button>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ── NAVEGACIÓN INFERIOR ─────────────────────────── -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showPage('search',this)">
+    <i class="ti ti-bolt" aria-hidden="true"></i>Rápido
+  </button>
+  <button class="nav-btn" onclick="showPage('captura',this)">
+    <i class="ti ti-clipboard-list" aria-hidden="true"></i>Agencias
+  </button>
+  <button class="nav-btn" onclick="showPage('dash',this)">
+    <i class="ti ti-chart-bar" aria-hidden="true"></i>Dashboard
+  </button>
+  <button class="nav-btn" onclick="showPage('hist',this)">
+    <i class="ti ti-history" aria-hidden="true"></i>Historial
+  </button>
+  <button class="nav-btn" onclick="showPage('cfg',this)">
+    <i class="ti ti-settings" aria-hidden="true"></i>Config
+  </button>
+</nav>
+
+<!-- ── SCRIPTS ─────────────────────────────────────── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
