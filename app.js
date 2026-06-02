@@ -24,8 +24,8 @@ const DEFAULT_AGENCIES = [
     members:['WUERO','VIUDA NEGRA','LA BARBIE','EL CHAPO'] },
 ];
 
-const DAYS       = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-const DAYS_SHORT = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
+const DAYS       = ['Sábado','Lunes','Martes','Miércoles','Jueves','Viernes'];
+const DAYS_SHORT = ['Sáb','Lun','Mar','Mié','Jue','Vie'];
 
 // ── DIRECTORIO ────────────────────────────────────────
 const DIRECTORIO = {
@@ -101,8 +101,10 @@ const DIRECTORIO = {
 let AGENCIES    = [];
 let state       = {};
 let curAgency   = 'AMIX';
-let curDay      = new Date().getDay();
-if (curDay === 0) curDay = 6; else curDay = Math.min(curDay - 1, 5);
+// Semana: Sáb=0, Lun=1, Mar=2, Mié=3, Jue=4, Vie=5
+const _wd = new Date().getDay(); // 0=dom,1=lun...6=sáb
+const _dayMap = {6:0, 1:1, 2:2, 3:3, 4:4, 5:5, 0:5}; // dom -> viernes (cierre)
+let curDay = _dayMap[_wd] !== undefined ? _dayMap[_wd] : 1;
 let openMembers = {};
 let quickDays   = {};
 let weekOffset  = 0; // 0 = semana actual, -1 = semana pasada, etc.
@@ -112,10 +114,12 @@ function getWeekKey(offset) {
   const off = offset !== undefined ? offset : weekOffset;
   const d = new Date();
   d.setDate(d.getDate() + off * 7);
-  const day = d.getDay() || 7;
-  const mon = new Date(d);
-  mon.setDate(d.getDate() - day + 1);
-  return mon.toISOString().slice(0, 10);
+  // Semana empieza el sábado (día 6)
+  const day = d.getDay(); // 0=dom ... 6=sáb
+  const diff = day === 6 ? 0 : day + 1; // días desde el sábado anterior
+  const sat = new Date(d);
+  sat.setDate(d.getDate() - diff);
+  return sat.toISOString().slice(0, 10);
 }
 function weekLabel() {
   if (weekOffset === 0) return 'Semana actual';
@@ -162,13 +166,14 @@ function switchWeek(dir) {
 // Devuelve las fechas reales de cada día de la semana actual
 function getWeekDates() {
   const dates = [];
-  const wk = getWeekKey(); // lunes de esta semana
-  const mon = new Date(wk + 'T12:00:00');
-  for (let i = 0; i < 6; i++) {
-    const d = new Date(mon);
-    d.setDate(mon.getDate() + i);
+  const wk  = getWeekKey();
+  const sat = new Date(wk + 'T12:00:00');
+  // Sáb=+0, Lun=+2, Mar=+3, Mié=+4, Jue=+5, Vie=+6
+  [0, 2, 3, 4, 5, 6].forEach(o => {
+    const d = new Date(sat);
+    d.setDate(sat.getDate() + o);
     dates.push(d);
-  }
+  });
   return dates;
 }
 function fmtDayBtn(di) {
@@ -200,6 +205,8 @@ function getAgencyProd(agId) {
 }
 function getGerentePay(ag) {
   const gp = getWeekTotal(ag.id, ag.members[0]);
+  const agProd = getAgencyProd(ag.id);
+  if (agProd === 0) return 0;
   if (ag.is_amix) {
     const op = AGENCIES.filter(a => !a.is_amix).reduce((s, a) => s + getAgencyProd(a.id), 0);
     return gp * ag.ger_pct + op * ag.bono_pct;
@@ -500,7 +507,93 @@ function renderDirectorio() {
   }).join('');
 }
 
-// ── CONFIG ────────────────────────────────────────────
+// ── REVISIÓN ──────────────────────────────────────────
+let revDay = 0; // índice del día seleccionado en revisión
+
+function renderRevision() {
+  document.getElementById('wl-rev').textContent = getWeekKey();
+  const dates = getWeekDates();
+
+  // Tabs de días
+  document.getElementById('rev-day-tabs').innerHTML = DAYS.map((d, di) => {
+    const fecha = dates[di].getDate() + ' ' + dates[di].toLocaleDateString('es-MX',{month:'short'});
+    const isSel = di === revDay;
+    const hasPays = AGENCIES.some(ag => ag.members.some(m => getDayTotal(ag.id,m,di) > 0));
+    return `<button class="day-tab${isSel?' active':''}"
+      style="${isSel?'background:#C2185B;color:#fff;border-color:#C2185B':''}"
+      onclick="revSelDay(${di})">
+      ${d} ${fecha}${hasPays?` <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${isSel?'#fff':'#C2185B'};margin-left:3px;vertical-align:middle"></span>`:''}
+    </button>`;
+  }).join('');
+
+  const q = (document.getElementById('rev-search').value || '').toLowerCase().trim();
+
+  // Recopilar todos los asesores con su total del día
+  const rows = [];
+  AGENCIES.forEach(ag => {
+    ag.members.forEach((m, mi) => {
+      const tot = getDayTotal(ag.id, m, revDay);
+      const pct = mi === 0 ? ag.ger_pct : ag.as_pct;
+      rows.push({ ag, m, mi, tot, nom: tot * pct, isGer: mi === 0 });
+    });
+  });
+
+  const filtered = q
+    ? rows.filter(r =>
+        r.m.toLowerCase().includes(q) ||
+        r.ag.id.toLowerCase().includes(q) ||
+        String(Math.round(r.tot)).includes(q)
+      )
+    : rows;
+
+  const conPago    = filtered.filter(r => r.tot > 0).sort((a,b) => b.tot - a.tot);
+  const sinPago    = filtered.filter(r => r.tot === 0);
+  const totalDia   = filtered.reduce((s,r) => s + r.tot, 0);
+  const totalNom   = filtered.reduce((s,r) => s + r.nom, 0);
+  const fecha      = dates[revDay].toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'});
+
+  const rowHtml = (r) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:0.5px solid var(--color-border-tertiary)">
+      <div style="width:32px;height:32px;border-radius:50%;background:${r.ag.color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#fff;flex-shrink:0">${r.m.slice(0,2).toUpperCase()}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.m}${r.isGer?' ★':''}</div>
+        <div style="font-size:10px;color:var(--color-text-secondary)">${r.ag.id}</div>
+      </div>
+      ${r.tot > 0
+        ? `<div style="text-align:right">
+            <div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">${fmt(r.tot)}</div>
+            <div style="font-size:10px;color:${r.ag.color}">Nóm: ${fmt(r.nom)}</div>
+          </div>`
+        : `<span style="font-size:11px;color:var(--color-text-secondary);padding:3px 8px;background:var(--color-background-secondary);border-radius:6px">Sin pago</span>`
+      }
+    </div>`;
+
+  document.getElementById('rev-results').innerHTML = `
+    <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;margin-bottom:12px">
+      <div style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)">
+        <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);text-transform:capitalize">${fecha}</div>
+        <div style="display:flex;gap:12px;margin-top:6px">
+          <div><span style="font-size:10px;color:var(--color-text-secondary)">Total día </span><span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">${fmt(totalDia)}</span></div>
+          <div><span style="font-size:10px;color:var(--color-text-secondary)">Nóminas </span><span style="font-size:13px;font-weight:500;color:#C2185B">${fmt(totalNom)}</span></div>
+          <div><span style="font-size:10px;color:var(--color-text-secondary)">Con pago </span><span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">${conPago.length}/${filtered.length}</span></div>
+        </div>
+      </div>
+      ${conPago.length > 0
+        ? `<div style="padding:6px 0">
+            <div style="font-size:10px;color:var(--color-text-secondary);padding:4px 12px;text-transform:uppercase;letter-spacing:.5px">Con pago (${conPago.length})</div>
+            ${conPago.map(rowHtml).join('')}
+          </div>`
+        : ''}
+      ${sinPago.length > 0
+        ? `<div style="padding:6px 0;border-top:0.5px solid var(--color-border-tertiary)">
+            <div style="font-size:10px;color:var(--color-text-secondary);padding:4px 12px;text-transform:uppercase;letter-spacing:.5px">Sin pago (${sinPago.length})</div>
+            ${sinPago.map(rowHtml).join('')}
+          </div>`
+        : ''}
+    </div>`;
+}
+
+function revSelDay(di) { revDay = di; renderRevision(); }
 function renderCfg() {
   document.getElementById('cfg-agencies').innerHTML = AGENCIES.map((ag,ai) => `
     <div class="ag-cfg">
@@ -564,6 +657,7 @@ function showPage(name, btn) {
   if(name==='hist') renderHist();
   if(name==='cfg') renderCfg();
   if(name==='directorio') renderDirectorio();
+  if(name==='revision') renderRevision();
 }
 function renderAll(){renderSearch();renderCaptura();}
 
