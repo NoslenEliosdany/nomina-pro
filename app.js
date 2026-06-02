@@ -278,12 +278,11 @@ function renderSearch() {
         ${dirMini}
         <div class="day-selector">${dayBtns}</div>
         <div class="quick-input-row">
-          <input type="number" placeholder="Monto del pago" id="qinput-${r.agId}-${r.mi}" min="0"
-            ${dayData.pays.length>0?'disabled style="opacity:.4"':''}>
+          <input type="number" placeholder="Monto del pago" id="qinput-${r.agId}-${r.mi}" min="0">
           <button class="add-quick-btn" style="background:${r.color}"
             onclick="qAddPay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${r.mi})">+ Agregar</button>
         </div>
-        ${dayTot>0?`<div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:6px">Hoy (${DAYS_SHORT[selDay]}): <strong>${fmt(dayTot)}</strong></div>`:''}
+        ${dayTot>0?`<div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:6px">${DAYS_SHORT[selDay]}: <strong>${fmt(dayTot)}</strong> (${dayData.pays.length} pago${dayData.pays.length!==1?'s':''})</div>`:''}
         ${dayData.pays.length>0?`<div class="quick-pays-list">${paysHtml}</div>`:''}
         ${dayData.pays.length===0&&(parseFloat(dayData.manual)||0)>0?`<div style="font-size:11px;color:var(--color-text-secondary);margin-top:4px">Total hoy: ${fmt(dayData.manual)}</div>`:''}
         <div class="week-summary-row">
@@ -349,7 +348,7 @@ function renderCaptura() {
           <input type="number" value="${dd.pays.length===0?(dd.manual||''):''}" placeholder="Total del día" min="0"
             onchange="capSetManual('${ag.id}','${m.replace(/'/g,"\\'")}',${curDay},this.value)" ${dd.pays.length>0?'disabled style="opacity:.4"':''}>
         </div>
-        <span class="desglose-toggle" onclick="toggleDs('ds-${ag.id}-${mi}')">${dd.pays.length>0?'▾':'▸'} Desglosar pagos (${dd.pays.length})</span>
+        <span class="desglose-toggle" onclick="toggleDs('ds-${ag.id}-${mi}')">${dd.pays.length>0?'▾':'▸'} Pagos del día (${dd.pays.length})</span>
         <div class="desglose-area${dd.pays.length>0?' open':''}" id="ds-${ag.id}-${mi}">
           <div>${paysHtml}</div>
           <button class="add-pay-btn" onclick="capAddPay('${ag.id}','${m.replace(/'/g,"\\'")}',${curDay})">+ Agregar pago</button>
