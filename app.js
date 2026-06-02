@@ -227,72 +227,124 @@ function renderSearch() {
   const filtered = q ? members.filter(r => r.name.toLowerCase().includes(q) || r.agId.toLowerCase().includes(q)) : members;
   if (!filtered.length) { document.getElementById('search-results').innerHTML = '<div class="search-empty">No se encontró ningún asesor</div>'; return; }
   document.getElementById('search-results').innerHTML = filtered.map(r => {
-    const wt = getWeekTotal(r.agId, r.name);
+    const wt  = getWeekTotal(r.agId, r.name);
     const pct = r.isGer ? r.ag.ger_pct : r.ag.as_pct;
+    const nom = wt * pct;
     const initials = r.name.split(' ').map(w => w[0]||'').join('').slice(0,2).toUpperCase();
-    const mk = memberKey(r.agId, r.name);
+    const mk     = memberKey(r.agId, r.name);
     const selDay = quickDays[mk] !== undefined ? quickDays[mk] : curDay;
     const dayData = getDayData(r.agId, r.name, selDay);
-    const isOpen = openMembers[mk];
-    const dir = DIRECTORIO[r.name];
+    const isOpen  = openMembers[mk];
+    const dir     = DIRECTORIO[r.name];
+    const dayTot  = getDayTotal(r.agId, r.name, selDay);
+    const inputId = 'qinput-' + r.agId.replace(/\s+/g,'_') + '-' + r.mi;
+
+    // Botones de día con fecha real
     const dayBtns = DAYS_SHORT.map((d, di) => {
       const { label, isToday, isPast } = fmtDayBtn(di);
-      const isSelected = di === selDay;
-      const style = isSelected
-        ? `background:${r.color};color:#fff;border-color:${r.color}`
+      const isSel = di === selDay;
+      const st = isSel
+        ? `background:${r.color};color:#fff;border-color:${r.color};font-weight:500`
         : isToday
-          ? `border-color:${r.color};color:${r.color};font-weight:700`
-          : isPast ? 'opacity:.6' : '';
-      return `<button class="day-sel-btn${isSelected?' active':''}" style="${style}"
+          ? `border-color:${r.color};color:${r.color};font-weight:500`
+          : `color:var(--color-text-secondary);${isPast?'opacity:.6':''}`;
+      return `<button class="day-sel-btn${isSel?' active':''}" style="${st}"
         onclick="qSelDay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${di})">${label}${isToday?' •':''}</button>`;
     }).join('');
-    const paysHtml = dayData.pays.map((p, pi) => `
-      <div class="quick-pay-row">
-        <span class="day-badge" style="background:${r.color}">${DAYS_SHORT[selDay]}</span>
-        <input type="number" value="${p}" min="0" placeholder="$0"
-          onchange="qUpdatePay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${selDay},${pi},this.value)">
-        <button class="del-btn" onclick="qDelPay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${selDay},${pi})">×</button>
-      </div>`).join('');
-    const dayTot = getDayTotal(r.agId, r.name, selDay);
-    const dirMini = dir ? `
-      <div class="dir-mini">
-        ${dir.nombres.map(n => `<div class="dir-mini-nombre">👤 ${n}</div>`).join('')}
-        <div class="dir-mini-tels">
-          ${dir.lab.map(t => `<a href="tel:${t}" class="tel-badge lab">📞 ${t}</a>`).join('')}
-          ${dir.per.map(t => `<a href="tel:${t}" class="tel-badge per">📱 ${t}</a>`).join('')}
+
+    // Lista de pagos del día
+    const paysHtml = dayData.pays.length > 0 ? `
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
+        ${dayData.pays.map((p, pi) => `
+          <div style="display:flex;align-items:center;gap:8px;background:var(--color-background-primary);border-radius:8px;padding:7px 10px;border:0.5px solid var(--color-border-tertiary)">
+            <span style="font-size:10px;padding:2px 7px;border-radius:6px;background:${r.color};color:#fff">Pago ${pi+1}</span>
+            <input type="number" value="${p}" min="0"
+              style="flex:1;border:none;background:transparent;font-size:13px;font-weight:500;color:var(--color-text-primary);outline:none;min-width:0"
+              onchange="qUpdatePay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${selDay},${pi},this.value)">
+            <button onclick="qDelPay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${selDay},${pi})"
+              style="background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:18px;line-height:1;padding:0 2px">×</button>
+          </div>`).join('')}
+      </div>` : '';
+
+    // Pseudónimos y teléfonos
+    const dirHtml = dir ? `
+      <div style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary)">
+        <div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Pseudónimos</div>
+        ${dir.nombres.map(n => `<div style="font-size:12px;color:var(--color-text-primary);margin-bottom:2px"><i class="ti ti-user" style="font-size:12px;margin-right:4px" aria-hidden="true"></i>${n}</div>`).join('')}
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:7px">
+          ${dir.lab.map(t => `<a href="tel:${t}" style="font-size:11px;padding:4px 9px;border-radius:20px;background:rgba(27,94,32,.1);color:#1B5E20;border:0.5px solid rgba(27,94,32,.25);text-decoration:none;display:inline-flex;align-items:center;gap:4px"><i class="ti ti-phone" style="font-size:12px" aria-hidden="true"></i>${t}</a>`).join('')}
+          ${dir.per.map(t => `<a href="tel:${t}" style="font-size:11px;padding:4px 9px;border-radius:20px;background:rgba(13,71,161,.1);color:#0D47A1;border:0.5px solid rgba(13,71,161,.25);text-decoration:none;display:inline-flex;align-items:center;gap:4px"><i class="ti ti-device-mobile" style="font-size:12px" aria-hidden="true"></i>${t}</a>`).join('')}
         </div>
       </div>` : '';
-    return `<div class="quick-card">
-      <div class="quick-card-hdr" onclick="toggleQuick('${r.agId}','${r.name.replace(/'/g,"\\'")}')">
-        <div class="quick-avatar" style="background:${r.color}">${initials}</div>
-        <div class="quick-info">
-          <div class="quick-name">${r.name}${r.isGer?' ★':''}</div>
-          <div class="quick-meta">${r.agId} · ${r.isGer?'Gerente':'Asesor'}</div>
+
+    // Barras de semana
+    const maxDay = Math.max(...DAYS.map((_,di) => getDayTotal(r.agId,r.name,di)), 1);
+    const barsHtml = `
+      <div style="padding:10px 14px">
+        <div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Resumen semana</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px">
+          <div style="background:var(--color-background-secondary);border-radius:8px;padding:7px;text-align:center">
+            <div style="font-size:9px;color:var(--color-text-secondary)">Producción</div>
+            <div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">${fmt(wt)}</div>
+          </div>
+          <div style="background:var(--color-background-secondary);border-radius:8px;padding:7px;text-align:center">
+            <div style="font-size:9px;color:var(--color-text-secondary)">Nómina</div>
+            <div style="font-size:13px;font-weight:500;color:${r.color}">${fmt(nom)}</div>
+          </div>
+          <div style="background:var(--color-background-secondary);border-radius:8px;padding:7px;text-align:center">
+            <div style="font-size:9px;color:var(--color-text-secondary)">Días activos</div>
+            <div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">${DAYS.filter((_,di)=>getDayTotal(r.agId,r.name,di)>0).length}/6</div>
+          </div>
         </div>
-        <div class="quick-chips">
-          <span class="chip">Sem: ${fmt(wt)}</span>
-          <span class="chip nom" style="background:${r.color}">Nóm: ${fmt(wt*pct)}</span>
+        <div style="display:flex;gap:4px">
+          ${DAYS_SHORT.map((d,di) => {
+            const dt = getDayTotal(r.agId,r.name,di);
+            const h  = dt > 0 ? Math.max(Math.round(dt/maxDay*32), 4) : 0;
+            const isSel = di === selDay;
+            return `<div style="flex:1;text-align:center;cursor:pointer" onclick="qSelDay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${di})">
+              <div style="font-size:9px;color:${isSel?r.color:'var(--color-text-secondary)'};font-weight:${isSel?'500':'400'};margin-bottom:3px">${d}</div>
+              <div style="height:32px;background:var(--color-background-secondary);border-radius:4px;position:relative;overflow:hidden">
+                ${dt>0?`<div style="position:absolute;bottom:0;width:100%;height:${h}px;background:${r.color};opacity:${isSel?1:.6};border-radius:4px"></div>`:''}
+              </div>
+              <div style="font-size:9px;color:${dt>0?r.color:'var(--color-text-secondary)'};margin-top:2px;font-weight:${dt>0?'500':'400'}">${dt>0?fmt(dt):'-'}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+
+    return `<div class="quick-card" style="border-radius:14px;overflow:hidden">
+      <div style="background:${r.color};padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="toggleQuick('${r.agId}','${r.name.replace(/'/g,"\\'")}')">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:#fff;flex-shrink:0">${initials}</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:500;color:#fff">${r.name}${r.isGer?' ★':''}</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.8)">${r.agId} · ${r.isGer?'Gerente':'Asesor'}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:10px;color:rgba(255,255,255,.7)">Semana</div>
+          <div style="font-size:15px;font-weight:500;color:#fff">${fmt(wt)}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.8)">Nóm: ${fmt(nom)}</div>
         </div>
       </div>
-      <div class="quick-body${isOpen?' open':''}">
-        ${dirMini}
-        <div class="day-selector">${dayBtns}</div>
-        <div class="quick-input-row">
-          <input type="number" placeholder="Monto del pago" id="qinput-${r.agId.replace(/\s+/g,'_')}-${r.mi}" min="0">
-          <button class="add-quick-btn" style="background:${r.color}"
-            onclick="qAddPay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${r.mi})">+ Agregar</button>
+      <div style="display:${isOpen?'block':'none'}">
+        ${dirHtml}
+        <div style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary)">
+          <div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">Día del pago</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">${dayBtns}</div>
         </div>
-        ${dayTot>0?`<div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:6px">${DAYS_SHORT[selDay]}: <strong>${fmt(dayTot)}</strong> (${dayData.pays.length} pago${dayData.pays.length!==1?'s':''})</div>`:''}
-        ${dayData.pays.length>0?`<div class="quick-pays-list">${paysHtml}</div>`:''}
-        ${dayData.pays.length===0&&(parseFloat(dayData.manual)||0)>0?`<div style="font-size:11px;color:var(--color-text-secondary);margin-top:4px">Total hoy: ${fmt(dayData.manual)}</div>`:''}
-        <div class="week-summary-row">
-          ${DAYS_SHORT.map((d,di)=>`<div class="wsumm">
-            <div class="wsumm-lbl">${d}</div>
-            <div class="wsumm-val" style="color:${getDayTotal(r.agId,r.name,di)>0?r.color:'var(--color-text-secondary)'}">
-              ${getDayTotal(r.agId,r.name,di)>0?fmt(getDayTotal(r.agId,r.name,di)):'-'}
-            </div>
-          </div>`).join('')}
+        <div style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary)">
+          <div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">
+            Pagos — ${fmtDayBtn(selDay).label}
+            ${dayTot>0?`<span style="color:${r.color};font-weight:500;margin-left:6px">${fmt(dayTot)}</span>`:''}
+          </div>
+          ${paysHtml}
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="number" id="${inputId}" placeholder="Nuevo pago..." min="0"
+              style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid var(--color-border-tertiary);font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary)">
+            <button onclick="qAddPay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${r.mi})"
+              style="padding:8px 14px;border-radius:8px;border:none;background:${r.color};color:#fff;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap">+ Agregar</button>
+          </div>
         </div>
+        ${barsHtml}
       </div>
     </div>`;
   }).join('');
