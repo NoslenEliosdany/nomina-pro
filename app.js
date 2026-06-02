@@ -4,21 +4,23 @@
 
 // ── AGENCIAS POR DEFECTO ──────────────────────────────
 const DEFAULT_AGENCIES = [
-  { id:'AMIX',      color:'#C2185B', ger_pct:.40, as_pct:.25, bono_pct:.10, is_amix:true,
+  { id:'AMIX',             color:'#C2185B', ger_pct:.40, as_pct:.25, bono_pct:.10, is_amix:true,
     members:['AMIX','RAPUNSEL','JANE','TIA TURBINA','ROJO','PANDA','MIMI','HOPPER'] },
-  { id:'BAMBINO',   color:'#212121', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
+  { id:'BAMBINO',          color:'#212121', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
     members:['BAMBINO','MAPACHE','POLI'] },
-  { id:'BATMAN',    color:'#4E342E', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
-    members:['BATMAN','MOANA','HARLEY','SABITO','URSULA','MCLOVIN','COME GALLETAS','NENA'] },
-  { id:'TISHA',     color:'#546E7A', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
-    members:['TISHA','ATENEA','ZEUS','POSEIDON','ARTEMISA','CRONNOS','AFRODITA'] },
-  { id:'VANELLOPE', color:'#6A1B9A', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
-    members:['VANELLOPE','PANTHER','DONATO','BLESSED','BLUE','FRIO','CHUCKY'] },
-  { id:'GROOT',     color:'#E65100', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
-    members:['GROOT','DEADPOL','SCARLET WISH','CAPITANA MARVEL','MANTIS','BLACK WIDOW','WOLVERINE','BLACK PANTHER','JEAN GREY','CAPITAN AMERICA'] },
-  { id:'MARCELINE', color:'#0D47A1', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
+  { id:'BATMAN',           color:'#4E342E', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
+    members:['BATMAN','HARLEY','SABITO','URSULA','MCLOVIN','COME GALLETAS','NENA'] },
+  { id:'LA CASA DE PAPEL', color:'#546E7A', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
+    members:['PROFESOR TISHA','DENVER','BERLIN','TOKIO','NAIROBI'] },
+  { id:'OLIMPUS',          color:'#607D8B', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
+    members:['OLIMPUS','ATENEA','ZEUS','POSEIDON','ARTEMISA','CRONNOS','AFRODITA'] },
+  { id:'FENIX',            color:'#6A1B9A', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
+    members:['FENIX','PANTHER','DONATO','BLESSED','BLUE','FRIO','CHUCKY'] },
+  { id:'MARVEL',           color:'#E65100', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
+    members:['JEAN GREY','GROOT','DEADPOL','SCARLET WISH','CAPITANA MARVEL','MANTIS','BLACK WIDOW','WOLVERINE','BLACK PANTHER','CAPITAN AMERICA'] },
+  { id:'MARCELINE',        color:'#0D47A1', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
     members:['MARCELINE','FLAME KING','GRUMOSA','BEEMO','FINN','MENTITA'] },
-  { id:'WUERO',     color:'#F9A825', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
+  { id:'WUERO',            color:'#F9A825', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
     members:['WUERO','VIUDA NEGRA','LA BARBIE','EL CHAPO'] },
 ];
 
@@ -42,40 +44,45 @@ const DIRECTORIO = {
   'POLI':           { nombres:['AMERICA SOTO REYES','AMERICA SOTO GONZALEZ'], lab:['5552749762','5511873728'], per:['5572734228'], ag:'BAMBINO' },
   // BATMAN
   'BATMAN':         { nombres:['JESUS CUETO'], lab:[], per:[], ag:'BATMAN' },
-  'MOANA':          { nombres:['ESTEFANIA GUADALUPE ROJAS LEYVA','KARLA ANDREA LOPEZ ROMERO'], lab:['5568938190','5664446668'], per:['5586172706'], ag:'BATMAN' },
   'HARLEY':         { nombres:['ELDA JAZMIN CORTAZAR MORAN','ADRIANA GUTIERREZ ALBERTO'], lab:['5519350892','5656513905'], per:['5549182965'], ag:'BATMAN' },
   'SABITO':         { nombres:['ALEJANDRA MENDOZA DE LA GUARDIA','NORMA EDITH CATALAN SERRANO'], lab:['5664446643','5530508094'], per:['6691444565'], ag:'BATMAN' },
   'URSULA':         { nombres:['GUADALUPE ARACELI GARCIA MARQUEZ','ADRIANA SALOME PERDOMO FLORES'], lab:['5552749225','5656513913'], per:['5616842161'], ag:'BATMAN' },
   'MCLOVIN':        { nombres:['CRISTIAN FRANCISCO ROJAS ANAYA','SERGIO VICTORIA RAMIREZ'], lab:['5551585850','5656513912'], per:['5578402921'], ag:'BATMAN' },
   'COME GALLETAS':  { nombres:['PERLA AMORENE ANAYA DIAZ','ANDREA PINEDA HERNANDEZ'], lab:['5561884961','5630950170'], per:['5525621681'], ag:'BATMAN' },
   'NENA':           { nombres:['ELIZABETH MERCADO SALGADO','RAQUE BUENROSRO SANCHEZ'], lab:['5528917968','5664446627'], per:['7991410159'], ag:'BATMAN' },
-  // TISHA
-  'TISHA':          { nombres:['TISHA'], lab:[], per:[], ag:'TISHA' },
-  'ATENEA':         { nombres:['ROSA CHRISTINA CHAVEZ NAVA','YANELLI CAROLINA QUESADA GARCIA'], lab:['5574997840'], per:[], ag:'TISHA' },
-  'ZEUS':           { nombres:['RODRIGO DURAN RODRIGUEZ','OLIVER VERGARA URBINA'], lab:['5550764613'], per:[], ag:'TISHA' },
-  'POSEIDON':       { nombres:['JOSE ANTONIO SANCHEZ ORTIZ','VICTOR HUGO LOPEZ PEREZ'], lab:['5551599549'], per:[], ag:'TISHA' },
-  'ARTEMISA':       { nombres:['ADRIANA OVALLE DE LA ROSA','SANDRA DIAS FFERNANDES'], lab:['5522980373','5522693742'], per:[], ag:'TISHA' },
-  'CRONNOS':        { nombres:['GERMAN VARELA GARCIA'], lab:['5611705147'], per:[], ag:'TISHA' },
-  'AFRODITA':       { nombres:['ZULEMA BETZAI CHARMICHART ALMANZA'], lab:['5618520259'], per:[], ag:'TISHA' },
-  // VANELLOPE
-  'VANELLOPE':      { nombres:['ANA CRISTINA ROSALES HERRERA','LAURA LETICIA JUAREZ JIMENEZ','LIZBETH RODRIGUEZ'], lab:['5573444688','5552749217','5527523754'], per:['5619501734'], ag:'VANELLOPE' },
-  'PANTHER':        { nombres:['ALEJANDRO ENCINAS NAJERA','GUILLERMO ISRAEL ALMORES MEDINA'], lab:['5535517393','5535020314'], per:['5582263437'], ag:'VANELLOPE' },
-  'DONATO':         { nombres:['RUBEN DONATO BARRON GARCIA','ABRAHAM TORRES MAGAÑA'], lab:['5551731315','5561885020'], per:['5615183872'], ag:'VANELLOPE' },
-  'BLESSED':        { nombres:['JESUS ANDRES ORTIZ GOMEZ','RAFAEL MONTES PONCE','ABELARDO LEYVA RODRIGUEZ'], lab:['5638032077','5511990458','5656024111'], per:['5560063089'], ag:'VANELLOPE' },
-  'BLUE':           { nombres:['EDUARDO REYES GOMEZ'], lab:['5518707844'], per:['5515697933'], ag:'VANELLOPE' },
-  'FRIO':           { nombres:['SAMUEL RAZO MORALES'], lab:['5554604021','5645926339'], per:['7442083048'], ag:'VANELLOPE' },
-  'CHUCKY':         { nombres:['DEBORA PALAFOX ISLAS','ABIGAIL RODRIGUEZ ZAPATA'], lab:['5662667230','5549429848'], per:['5611376584'], ag:'VANELLOPE' },
-  // GROOT
-  'GROOT':          { nombres:['CARLOS PATTERSON OLIVAS','JORGE ADRIAN GOMEZ'], lab:['5522641318'], per:['5510744003'], ag:'GROOT' },
-  'DEADPOL':        { nombres:['ABEL EMILIO CASTORENA'], lab:['5527524080'], per:['7221655529'], ag:'GROOT' },
-  'SCARLET WISH':   { nombres:['PILAR HERNANDEZ TRINIDAD'], lab:['5561493116'], per:['5530847902'], ag:'GROOT' },
-  'CAPITANA MARVEL':{ nombres:['LAURA LETICIA JUAREZ JIMENEZ'], lab:['5551561031'], per:['5610289129'], ag:'GROOT' },
-  'MANTIS':         { nombres:['PERLA AMORENE DIAZ ANAYA'], lab:['5514961745'], per:['5632834929'], ag:'GROOT' },
-  'BLACK WIDOW':    { nombres:['YADIRA JASMIN VERGARA','DANIELA MIRAMONTES RAMIREZ'], lab:['5519318959'], per:['5548862369'], ag:'GROOT' },
-  'WOLVERINE':      { nombres:['BENIGNO GONZALEZ','ABRAM TORRES MAGAÑA'], lab:['5529484808'], per:['5620923288'], ag:'GROOT' },
-  'BLACK PANTHER':  { nombres:['ANTONIO MOISES CAMPOS GOMEZ'], lab:['5626847060'], per:[], ag:'GROOT' },
-  'JEAN GREY':      { nombres:['MARTHA ADRIANA RUIZ ALVARADO','HAYDEE SANCHEZ VARGAS'], lab:['5522689270','5534951821'], per:['5619278400'], ag:'GROOT' },
-  'CAPITAN AMERICA':{ nombres:['MARCO ANTONIO HERNANDEZ MARTINEZ'], lab:['5514926718'], per:['5521911935'], ag:'GROOT' },
+  // LA CASA DE PAPEL
+  'PROFESOR TISHA': { nombres:['MELISSA PALOMA'], lab:[], per:[], ag:'LA CASA DE PAPEL' },
+  'DENVER':         { nombres:['DENVER'], lab:[], per:[], ag:'LA CASA DE PAPEL' },
+  'BERLIN':         { nombres:['BERLIN'], lab:[], per:[], ag:'LA CASA DE PAPEL' },
+  'TOKIO':          { nombres:['TOKIO'], lab:[], per:[], ag:'LA CASA DE PAPEL' },
+  'NAIROBI':        { nombres:['NAIROBI'], lab:[], per:[], ag:'LA CASA DE PAPEL' },
+  // OLIMPUS
+  'OLIMPUS':        { nombres:['OLIMPUS'], lab:[], per:[], ag:'OLIMPUS' },
+  'ATENEA':         { nombres:['ROSA CHRISTINA CHAVEZ NAVA','YANELLI CAROLINA QUESADA GARCIA'], lab:['5574997840'], per:[], ag:'OLIMPUS' },
+  'ZEUS':           { nombres:['RODRIGO DURAN RODRIGUEZ','OLIVER VERGARA URBINA'], lab:['5550764613'], per:[], ag:'OLIMPUS' },
+  'POSEIDON':       { nombres:['JOSE ANTONIO SANCHEZ ORTIZ','VICTOR HUGO LOPEZ PEREZ'], lab:['5551599549'], per:[], ag:'OLIMPUS' },
+  'ARTEMISA':       { nombres:['ADRIANA OVALLE DE LA ROSA','SANDRA DIAS FFERNANDES'], lab:['5522980373','5522693742'], per:[], ag:'OLIMPUS' },
+  'CRONNOS':        { nombres:['GERMAN VARELA GARCIA'], lab:['5611705147'], per:[], ag:'OLIMPUS' },
+  'AFRODITA':       { nombres:['ZULEMA BETZAI CHARMICHART ALMANZA'], lab:['5618520259'], per:[], ag:'OLIMPUS' },
+  // FENIX
+  'FENIX':          { nombres:['FENIX'], lab:[], per:[], ag:'FENIX' },
+  'PANTHER':        { nombres:['ALEJANDRO ENCINAS NAJERA','GUILLERMO ISRAEL ALMORES MEDINA'], lab:['5535517393','5535020314'], per:['5582263437'], ag:'FENIX' },
+  'DONATO':         { nombres:['RUBEN DONATO BARRON GARCIA','ABRAHAM TORRES MAGAÑA'], lab:['5551731315','5561885020'], per:['5615183872'], ag:'FENIX' },
+  'BLESSED':        { nombres:['JESUS ANDRES ORTIZ GOMEZ','RAFAEL MONTES PONCE','ABELARDO LEYVA RODRIGUEZ'], lab:['5638032077','5511990458','5656024111'], per:['5560063089'], ag:'FENIX' },
+  'BLUE':           { nombres:['EDUARDO REYES GOMEZ'], lab:['5518707844'], per:['5515697933'], ag:'FENIX' },
+  'FRIO':           { nombres:['SAMUEL RAZO MORALES'], lab:['5554604021','5645926339'], per:['7442083048'], ag:'FENIX' },
+  'CHUCKY':         { nombres:['DEBORA PALAFOX ISLAS','ABIGAIL RODRIGUEZ ZAPATA'], lab:['5662667230','5549429848'], per:['5611376584'], ag:'FENIX' },
+  // MARVEL
+  'JEAN GREY':      { nombres:['MARTHA ADRIANA RUIZ ALVARADO','HAYDEE SANCHEZ VARGAS'], lab:['5522689270','5534951821'], per:['5619278400'], ag:'MARVEL' },
+  'GROOT':          { nombres:['CARLOS PATTERSON OLIVAS','JORGE ADRIAN GOMEZ'], lab:['5522641318'], per:['5510744003'], ag:'MARVEL' },
+  'DEADPOL':        { nombres:['ABEL EMILIO CASTORENA'], lab:['5527524080'], per:['7221655529'], ag:'MARVEL' },
+  'SCARLET WISH':   { nombres:['PILAR HERNANDEZ TRINIDAD'], lab:['5561493116'], per:['5530847902'], ag:'MARVEL' },
+  'CAPITANA MARVEL':{ nombres:['LAURA LETICIA JUAREZ JIMENEZ'], lab:['5551561031'], per:['5610289129'], ag:'MARVEL' },
+  'MANTIS':         { nombres:['PERLA AMORENE DIAZ ANAYA'], lab:['5514961745'], per:['5632834929'], ag:'MARVEL' },
+  'BLACK WIDOW':    { nombres:['YADIRA JASMIN VERGARA','DANIELA MIRAMONTES RAMIREZ'], lab:['5519318959'], per:['5548862369'], ag:'MARVEL' },
+  'WOLVERINE':      { nombres:['BENIGNO GONZALEZ','ABRAM TORRES MAGAÑA'], lab:['5529484808'], per:['5620923288'], ag:'MARVEL' },
+  'BLACK PANTHER':  { nombres:['ANTONIO MOISES CAMPOS GOMEZ'], lab:['5626847060'], per:[], ag:'MARVEL' },
+  'CAPITAN AMERICA':{ nombres:['MARCO ANTONIO HERNANDEZ MARTINEZ'], lab:['5514926718'], per:['5521911935'], ag:'MARVEL' },
   // MARCELINE
   'MARCELINE':      { nombres:['MARCELINE'], lab:[], per:[], ag:'MARCELINE' },
   'FLAME KING':     { nombres:['ANA LESSLY MONTERO','ADRIANA SALAZAR MONDRAGON'], lab:['5575015142'], per:['5647419043'], ag:'MARCELINE' },
@@ -178,12 +185,7 @@ function renderSearch() {
   const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
   const members = allMembers();
   const filtered = q ? members.filter(r => r.name.toLowerCase().includes(q) || r.agId.toLowerCase().includes(q)) : members;
-
-  if (!filtered.length) {
-    document.getElementById('search-results').innerHTML = '<div class="search-empty">No se encontró ningún asesor</div>';
-    return;
-  }
-
+  if (!filtered.length) { document.getElementById('search-results').innerHTML = '<div class="search-empty">No se encontró ningún asesor</div>'; return; }
   document.getElementById('search-results').innerHTML = filtered.map(r => {
     const wt = getWeekTotal(r.agId, r.name);
     const pct = r.isGer ? r.ag.ger_pct : r.ag.as_pct;
@@ -193,22 +195,18 @@ function renderSearch() {
     const dayData = getDayData(r.agId, r.name, selDay);
     const isOpen = openMembers[mk];
     const dir = DIRECTORIO[r.name];
-
     const dayBtns = DAYS_SHORT.map((d, di) => `
       <button class="day-sel-btn${di===selDay?' active':''}"
         style="${di===selDay?'background:'+r.color+';color:#fff;border-color:'+r.color:''}"
-        onclick="qSelDay('${r.agId}','${r.name}',${di})">${d}</button>`).join('');
-
+        onclick="qSelDay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${di})">${d}</button>`).join('');
     const paysHtml = dayData.pays.map((p, pi) => `
       <div class="quick-pay-row">
         <span class="day-badge" style="background:${r.color}">${DAYS_SHORT[selDay]}</span>
         <input type="number" value="${p}" min="0" placeholder="$0"
-          onchange="qUpdatePay('${r.agId}','${r.name}',${selDay},${pi},this.value)">
-        <button class="del-btn" onclick="qDelPay('${r.agId}','${r.name}',${selDay},${pi})">×</button>
+          onchange="qUpdatePay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${selDay},${pi},this.value)">
+        <button class="del-btn" onclick="qDelPay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${selDay},${pi})">×</button>
       </div>`).join('');
-
     const dayTot = getDayTotal(r.agId, r.name, selDay);
-
     const dirMini = dir ? `
       <div class="dir-mini">
         ${dir.nombres.map(n => `<div class="dir-mini-nombre">👤 ${n}</div>`).join('')}
@@ -217,9 +215,8 @@ function renderSearch() {
           ${dir.per.map(t => `<a href="tel:${t}" class="tel-badge per">📱 ${t}</a>`).join('')}
         </div>
       </div>` : '';
-
     return `<div class="quick-card">
-      <div class="quick-card-hdr" onclick="toggleQuick('${r.agId}','${r.name}')">
+      <div class="quick-card-hdr" onclick="toggleQuick('${r.agId}','${r.name.replace(/'/g,"\\'")}')">
         <div class="quick-avatar" style="background:${r.color}">${initials}</div>
         <div class="quick-info">
           <div class="quick-name">${r.name}${r.isGer?' ★':''}</div>
@@ -237,7 +234,7 @@ function renderSearch() {
           <input type="number" placeholder="Monto del pago" id="qinput-${r.agId}-${r.mi}" min="0"
             ${dayData.pays.length>0?'disabled style="opacity:.4"':''}>
           <button class="add-quick-btn" style="background:${r.color}"
-            onclick="qAddPay('${r.agId}','${r.name}',${r.mi})">+ Agregar</button>
+            onclick="qAddPay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${r.mi})">+ Agregar</button>
         </div>
         ${dayTot>0?`<div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:6px">Hoy (${DAYS_SHORT[selDay]}): <strong>${fmt(dayTot)}</strong></div>`:''}
         ${dayData.pays.length>0?`<div class="quick-pays-list">${paysHtml}</div>`:''}
@@ -269,7 +266,7 @@ function qAddPay(agId, m, mi) {
 function qUpdatePay(agId,m,di,pi,val) { const d=getDayData(agId,m,di); d.pays[pi]=parseFloat(val)||0; setDayData(agId,m,di,d); saveState(); renderSearch(); }
 function qDelPay(agId,m,di,pi) { const d=getDayData(agId,m,di); d.pays.splice(pi,1); setDayData(agId,m,di,d); saveState(); renderSearch(); }
 
-// ── CAPTURA ───────────────────────────────────────────
+// ── GERENCIA (CAPTURA) ────────────────────────────────
 function renderCaptura() {
   document.getElementById('wl-cap').textContent = 'Semana ' + getWeekKey();
   const ag = AGENCIES.find(a => a.id === curAgency);
@@ -281,11 +278,11 @@ function renderCaptura() {
     const isGer=mi===0, dd=getDayData(ag.id,m,curDay), dayAmt=getDayTotal(ag.id,m,curDay), wt=getWeekTotal(ag.id,m), pct=isGer?ag.ger_pct:ag.as_pct, isOpen=openMembers[ag.id+m];
     const paysHtml = dd.pays.map((p,pi) => `
       <div class="pay-item">
-        <input type="number" value="${p}" min="0" onchange="capUpdatePay('${ag.id}','${m}',${curDay},${pi},this.value)">
-        <button class="del-btn" onclick="capDelPay('${ag.id}','${m}',${curDay},${pi})">×</button>
+        <input type="number" value="${p}" min="0" onchange="capUpdatePay('${ag.id}','${m.replace(/'/g,"\\'")}',${curDay},${pi},this.value)">
+        <button class="del-btn" onclick="capDelPay('${ag.id}','${m.replace(/'/g,"\\'")}',${curDay},${pi})">×</button>
       </div>`).join('');
     return `<div class="member-row">
-      <div class="member-hdr" onclick="toggleMember('${ag.id}','${m}')" style="${isGer?'background:'+ag.color+';color:#fff':''}">
+      <div class="member-hdr" onclick="toggleMember('${ag.id}','${m.replace(/'/g,"\\'")}' )" style="${isGer?'background:'+ag.color+';color:#fff':''}">
         <div class="member-name">${isGer?'<span class="ger-badge">GERENTE</span>':''}<span>${m}</span></div>
         <div class="chips">
           <span class="chip">Hoy: ${fmt(dayAmt)}</span>
@@ -296,12 +293,12 @@ function renderCaptura() {
       <div class="member-body${isOpen?' open':''}">
         <div class="input-main">
           <input type="number" value="${dd.pays.length===0?(dd.manual||''):''}" placeholder="Total del día" min="0"
-            onchange="capSetManual('${ag.id}','${m}',${curDay},this.value)" ${dd.pays.length>0?'disabled style="opacity:.4"':''}>
+            onchange="capSetManual('${ag.id}','${m.replace(/'/g,"\\'")}',${curDay},this.value)" ${dd.pays.length>0?'disabled style="opacity:.4"':''}>
         </div>
         <span class="desglose-toggle" onclick="toggleDs('ds-${ag.id}-${mi}')">${dd.pays.length>0?'▾':'▸'} Desglosar pagos (${dd.pays.length})</span>
         <div class="desglose-area${dd.pays.length>0?' open':''}" id="ds-${ag.id}-${mi}">
           <div>${paysHtml}</div>
-          <button class="add-pay-btn" onclick="capAddPay('${ag.id}','${m}',${curDay})">+ Agregar pago</button>
+          <button class="add-pay-btn" onclick="capAddPay('${ag.id}','${m.replace(/'/g,"\\'")}',${curDay})">+ Agregar pago</button>
         </div>
       </div>
     </div>`;
@@ -331,7 +328,7 @@ function renderDash() {
   document.getElementById('dash-metrics').innerHTML=`
     <div class="metric-card"><div class="metric-lbl">Producción total</div><div class="metric-val">${fmt(totProd)}</div></div>
     <div class="metric-card"><div class="metric-lbl">Total nóminas</div><div class="metric-val" style="color:#C2185B">${fmt(totNom)}</div></div>
-    <div class="metric-card"><div class="metric-lbl">Agencias activas</div><div class="metric-val">${AGENCIES.filter(ag=>getAgencyProd(ag.id)>0).length}/${AGENCIES.length}</div></div>
+    <div class="metric-card"><div class="metric-lbl">Gerencias activas</div><div class="metric-val">${AGENCIES.filter(ag=>getAgencyProd(ag.id)>0).length}/${AGENCIES.length}</div></div>
     <div class="metric-card"><div class="metric-lbl">Día seleccionado</div><div class="metric-val" style="font-size:15px">${DAYS[curDay]}</div></div>`;
   document.getElementById('dash-bars').innerHTML=AGENCIES.map(ag=>{
     const prod=getAgencyProd(ag.id);
@@ -345,29 +342,11 @@ function renderDash() {
   ctx.beginPath();ctx.arc(60,60,28,0,Math.PI*2);ctx.fillStyle='var(--color-background-primary)';ctx.fill();
   document.getElementById('pie-legend').innerHTML=AGENCIES.map((ag,i)=>`<div class="leg-item"><div class="leg-dot" style="background:${ag.color}"></div><span>${ag.id}: ${Math.round(vals[i]/total*100)}%</span></div>`).join('');
   const all=[];
-  AGENCIES.forEach(ag=>ag.members.forEach((m,mi)=>{const wt=getWeekTotal(ag.id,m);if(wt>0)all.push({name:m,color:ag.color,total:wt,nom:wt*(mi===0?ag.ger_pct:ag.as_pct)});}));
+  AGENCIES.forEach(ag=>ag.members.forEach((m,mi)=>{const wt=getWeekTotal(ag.id,m);if(wt>0)all.push({name:m,color:ag.color,total:wt});}));
   all.sort((a,b)=>b.total-a.total);
   const maxR=all[0]?.total||1;
   document.getElementById('dash-ranking').innerHTML=all.slice(0,10).map((r,i)=>`
     <div class="bar-row"><div class="bar-name" style="font-size:10px">${i+1}. ${r.name}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(r.total/maxR*100)}%;background:${r.color}"></div></div><div class="bar-val" style="font-size:10px">${fmt(r.total)}</div></div>`).join('')||'<p style="color:var(--color-text-secondary);font-size:12px">Sin producción esta semana</p>';
-}
-
-// ── HISTORIAL ─────────────────────────────────────────
-function renderHist() {
-  const keys=[];
-  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('nomina_2'))keys.push(k);}
-  keys.sort().reverse();
-  if(!keys.length){document.getElementById('hist-content').innerHTML='<p style="padding:20px 0;color:var(--color-text-secondary)">No hay semanas anteriores guardadas.</p>';return;}
-  document.getElementById('hist-content').innerHTML=keys.map(k=>{
-    const wk=k.replace('nomina_','');let dat;try{dat=JSON.parse(localStorage.getItem(k));}catch{return '';}
-    let totP=0;
-    const rows=AGENCIES.map(ag=>{
-      const prod=ag.members.reduce((s,m)=>{const days=dat[ag.id]?.[m]?.days||[];return s+days.reduce((ds,d)=>{const ps=(d.pays||[]).reduce((pp,p)=>pp+(parseFloat(p)||0),0);return ds+(ps>0?ps:(parseFloat(d.manual)||0));},0);},0);
-      totP+=prod;
-      return `<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${ag.color};margin-right:4px"></span>${ag.id}</td><td style="text-align:right">${fmt(prod)}</td></tr>`;
-    }).join('');
-    return `<div class="hist-card"><div class="hist-week">Semana del ${fmtDate(wk)}</div><table class="hist-table">${rows}<tr style="font-weight:700"><td>TOTAL</td><td style="text-align:right">${fmt(totP)}</td></tr></table></div>`;
-  }).join('');
 }
 
 // ── DIRECTORIO ────────────────────────────────────────
@@ -380,53 +359,37 @@ function renderDirectorio() {
         d.ag.toLowerCase().includes(q) ||
         d.nombres.some(n => n.toLowerCase().includes(q)) ||
         d.lab.some(t => t.includes(q)) ||
-        d.per.some(t => t.includes(q))
-      )
+        d.per.some(t => t.includes(q)))
     : entries;
-
-  if (!filtered.length) {
-    document.getElementById('dir-results').innerHTML = '<div class="search-empty">Sin resultados</div>';
-    return;
-  }
-
-  // Agrupar por agencia respetando orden
+  if (!filtered.length) { document.getElementById('dir-results').innerHTML='<div class="search-empty">Sin resultados</div>'; return; }
   const byAg = {};
-  filtered.forEach(([apodo, d]) => {
-    if (!byAg[d.ag]) byAg[d.ag] = [];
-    byAg[d.ag].push([apodo, d]);
-  });
-
-  document.getElementById('dir-results').innerHTML = AGENCIES
-    .filter(ag => byAg[ag.id])
-    .map(ag => {
-      const cards = byAg[ag.id].map(([apodo, d]) => {
-        const isGer = AGENCIES.find(a => a.id === ag.id)?.members[0] === apodo;
-        const labTels = d.lab.map(t => `<a href="tel:${t}" class="tel-badge lab"><span class="tel-badge-icon">📞</span>${t}</a>`).join('');
-        const perTels = d.per.map(t => `<a href="tel:${t}" class="tel-badge per"><span class="tel-badge-icon">📱</span>${t}</a>`).join('');
-        return `<div class="dir-card">
-          <div class="dir-card-top">
-            <div class="dir-avatar" style="background:${ag.color}">${apodo.slice(0,2).toUpperCase()}</div>
-            <div class="dir-card-info">
-              <div class="dir-apodo">${apodo}${isGer?`<span class="dir-ger-badge" style="background:${ag.color}">GERENTE</span>`:''}</div>
-              <div class="dir-agencia" style="color:${ag.color}">${ag.id}</div>
-            </div>
+  filtered.forEach(([apodo, d]) => { if (!byAg[d.ag]) byAg[d.ag]=[]; byAg[d.ag].push([apodo,d]); });
+  document.getElementById('dir-results').innerHTML = AGENCIES.filter(ag=>byAg[ag.id]).map(ag => {
+    const cards = byAg[ag.id].map(([apodo, d]) => {
+      const isGer = AGENCIES.find(a=>a.id===ag.id)?.members[0]===apodo;
+      const labTels = d.lab.map(t=>`<a href="tel:${t}" class="tel-badge lab">📞 ${t}</a>`).join('');
+      const perTels = d.per.map(t=>`<a href="tel:${t}" class="tel-badge per">📱 ${t}</a>`).join('');
+      return `<div class="dir-card">
+        <div class="dir-card-top">
+          <div class="dir-avatar" style="background:${ag.color}">${apodo.slice(0,2).toUpperCase()}</div>
+          <div class="dir-card-info">
+            <div class="dir-apodo">${apodo}${isGer?`<span class="dir-ger-badge" style="background:${ag.color}">GERENTE</span>`:''}</div>
+            <div class="dir-agencia" style="color:${ag.color}">${ag.id}</div>
           </div>
-          <div class="dir-card-body">
-            <div class="dir-nombres-list">
-              ${d.nombres.map(n => `<div class="dir-nombre-row">${n}</div>`).join('')}
-            </div>
-            <div class="dir-tels">${labTels}${perTels}</div>
-          </div>
-        </div>`;
-      }).join('');
-      return `<div class="dir-group">
-        <div class="dir-group-header" style="color:${ag.color};border-color:${ag.color}">
-          <span>${ag.id}</span>
-          <span class="dir-group-count">${byAg[ag.id].length} contactos</span>
         </div>
-        <div class="dir-cards-grid">${cards}</div>
+        <div class="dir-card-body">
+          <div class="dir-nombres-list">${d.nombres.map(n=>`<div class="dir-nombre-row">${n}</div>`).join('')}</div>
+          <div class="dir-tels">${labTels}${perTels}</div>
+        </div>
       </div>`;
     }).join('');
+    return `<div class="dir-group">
+      <div class="dir-group-header" style="color:${ag.color};border-color:${ag.color}">
+        <span>${ag.id}</span><span class="dir-group-count">${byAg[ag.id].length} contactos</span>
+      </div>
+      <div class="dir-cards-grid">${cards}</div>
+    </div>`;
+  }).join('');
 }
 
 // ── CONFIG ────────────────────────────────────────────
@@ -434,9 +397,13 @@ function renderCfg() {
   document.getElementById('cfg-agencies').innerHTML = AGENCIES.map((ag,ai) => `
     <div class="ag-cfg">
       <div class="ag-cfg-hdr">
-        <div class="ag-color-dot" style="background:${ag.color}"></div>
-        <div class="ag-cfg-name">${ag.id}</div>
-        <small style="color:var(--color-text-secondary);font-size:10px;margin-left:auto">Ger:${Math.round(ag.ger_pct*100)}% · As:${Math.round(ag.as_pct*100)}% · Bono:${Math.round(ag.bono_pct*100)}%</small>
+        <input type="color" value="${ag.color}" title="Color de gerencia"
+          style="width:28px;height:28px;border:none;border-radius:50%;cursor:pointer;padding:0;background:none"
+          onchange="AGENCIES[${ai}].color=this.value;renderCfg()">
+        <input value="${ag.id}"
+          style="font-weight:700;font-size:13px;border:none;background:transparent;color:var(--color-text-primary);flex:1;outline:none;border-bottom:1.5px solid ${ag.color};padding:2px 4px"
+          onchange="AGENCIES[${ai}].id=this.value">
+        <small style="color:var(--color-text-secondary);font-size:10px;margin-left:8px">Ger:${Math.round(ag.ger_pct*100)}% · As:${Math.round(ag.as_pct*100)}%</small>
       </div>
       <div id="mcfg-${ai}">
         ${ag.members.map((m,mi)=>`
@@ -472,7 +439,7 @@ function exportXLSX() {
     rows.push([],[`PRODUCCIÓN`,'','','','','','',getAgencyProd(ag.id)],[`NÓM. GERENTE`,'','','','','','',getGerentePay(ag)]);
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),ag.id.slice(0,31));
   });
-  const res=[['AGENCIA','PRODUCCIÓN','NÓM. GERENTE','BONO','NÓM. EQUIPO']];
+  const res=[['GERENCIA','PRODUCCIÓN','NÓM. GERENTE','BONO','NÓM. EQUIPO']];
   AGENCIES.forEach(ag=>res.push([ag.id,getAgencyProd(ag.id),getGerentePay(ag),getBono(ag),getEquipoPay(ag)]));
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(res),'RESUMEN');
   XLSX.writeFile(wb,`Nomina_${getWeekKey()}.xlsx`);
@@ -491,6 +458,24 @@ function showPage(name, btn) {
   if(name==='directorio') renderDirectorio();
 }
 function renderAll(){renderSearch();renderCaptura();}
+
+// ── HISTORIAL ─────────────────────────────────────────
+function renderHist() {
+  const keys=[];
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('nomina_2'))keys.push(k);}
+  keys.sort().reverse();
+  if(!keys.length){document.getElementById('hist-content').innerHTML='<p style="padding:20px 0;color:var(--color-text-secondary)">No hay semanas anteriores.</p>';return;}
+  document.getElementById('hist-content').innerHTML=keys.map(k=>{
+    const wk=k.replace('nomina_','');let dat;try{dat=JSON.parse(localStorage.getItem(k));}catch{return '';}
+    let totP=0;
+    const rows=AGENCIES.map(ag=>{
+      const prod=ag.members.reduce((s,m)=>{const days=dat[ag.id]?.[m]?.days||[];return s+days.reduce((ds,d)=>{const ps=(d.pays||[]).reduce((pp,p)=>pp+(parseFloat(p)||0),0);return ds+(ps>0?ps:(parseFloat(d.manual)||0));},0);},0);
+      totP+=prod;
+      return `<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${ag.color};margin-right:4px"></span>${ag.id}</td><td style="text-align:right">${fmt(prod)}</td></tr>`;
+    }).join('');
+    return `<div class="hist-card"><div class="hist-week">Semana del ${fmtDate(wk)}</div><table class="hist-table">${rows}<tr style="font-weight:700"><td>TOTAL</td><td style="text-align:right">${fmt(totP)}</td></tr></table></div>`;
+  }).join('');
+}
 
 // ── INIT ──────────────────────────────────────────────
 localStorage.removeItem('nomina_agencies');
