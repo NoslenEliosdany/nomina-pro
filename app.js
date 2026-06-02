@@ -432,11 +432,12 @@ function renderDash() {
   const totProd=AGENCIES.reduce((s,ag)=>s+getAgencyProd(ag.id),0);
   const totNom=AGENCIES.reduce((s,ag)=>s+getGerentePay(ag)+getEquipoPay(ag),0);
   const maxProd=Math.max(...AGENCIES.map(ag=>getAgencyProd(ag.id)),1);
+  const bestAg = AGENCIES.reduce((a,b) => getAgencyProd(a.id) > getAgencyProd(b.id) ? a : b);
   document.getElementById('dash-metrics').innerHTML=`
-    <div class="metric-card"><div class="metric-lbl">Producción total</div><div class="metric-val">${fmt(totProd)}</div></div>
+    <div class="metric-card"><div class="metric-lbl">Total semana</div><div class="metric-val">${fmt(totProd)}</div></div>
     <div class="metric-card"><div class="metric-lbl">Total nóminas</div><div class="metric-val" style="color:#C2185B">${fmt(totNom)}</div></div>
     <div class="metric-card"><div class="metric-lbl">Gerencias activas</div><div class="metric-val">${AGENCIES.filter(ag=>getAgencyProd(ag.id)>0).length}/${AGENCIES.length}</div></div>
-    <div class="metric-card"><div class="metric-lbl">Día seleccionado</div><div class="metric-val" style="font-size:15px">${DAYS[curDay]}</div></div>`;
+    <div class="metric-card"><div class="metric-lbl">Mejor gerencia</div><div class="metric-val" style="font-size:14px;color:${bestAg.color}">${bestAg.id}</div></div>`;
   document.getElementById('dash-bars').innerHTML=AGENCIES.map(ag=>{
     const prod=getAgencyProd(ag.id);
     return `<div class="bar-row"><div class="bar-name">${ag.id}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(prod/maxProd*100)}%;background:${ag.color}"></div></div><div class="bar-val">${fmt(prod)}</div></div>`;
