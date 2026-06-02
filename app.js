@@ -493,4 +493,5 @@ function showPage(name, btn) {
 function renderAll(){renderSearch();renderCaptura();}
 
 // ── INIT ──────────────────────────────────────────────
+localStorage.removeItem('nomina_agencies');
 loadAgencies(); loadState(); renderAll();
