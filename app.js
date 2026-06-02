@@ -105,12 +105,22 @@ let curDay      = new Date().getDay();
 if (curDay === 0) curDay = 6; else curDay = Math.min(curDay - 1, 5);
 let openMembers = {};
 let quickDays   = {};
+let weekOffset  = 0; // 0 = semana actual, -1 = semana pasada, etc.
 
 // ── UTILIDADES ────────────────────────────────────────
-function getWeekKey() {
-  const d = new Date(), day = d.getDay() || 7, mon = new Date(d);
+function getWeekKey(offset) {
+  const off = offset !== undefined ? offset : weekOffset;
+  const d = new Date();
+  d.setDate(d.getDate() + off * 7);
+  const day = d.getDay() || 7;
+  const mon = new Date(d);
   mon.setDate(d.getDate() - day + 1);
   return mon.toISOString().slice(0, 10);
+}
+function weekLabel() {
+  if (weekOffset === 0) return 'Semana actual';
+  if (weekOffset === -1) return 'Semana pasada';
+  return 'Semana ' + getWeekKey();
 }
 function fmt(n) { return '$' + Math.round(n).toLocaleString('es-MX'); }
 function fmtDate(wk) {
@@ -140,6 +150,12 @@ function loadState() {
   });
 }
 function saveState() { localStorage.setItem('nomina_' + getWeekKey(), JSON.stringify(state)); }
+
+function switchWeek(dir) {
+  weekOffset += dir;
+  loadState();
+  renderAll();
+}
 
 // ── CÁLCULOS ──────────────────────────────────────────
 function getDayData(agId, m, di) { return state[agId]?.[m]?.days?.[di] || { manual:0, pays:[] }; }
@@ -268,7 +284,14 @@ function qDelPay(agId,m,di,pi) { const d=getDayData(agId,m,di); d.pays.splice(pi
 
 // ── GERENCIA (CAPTURA) ────────────────────────────────
 function renderCaptura() {
-  document.getElementById('wl-cap').textContent = 'Semana ' + getWeekKey();
+  const wkLabel = weekLabel();
+  const isCurrentWeek = weekOffset === 0;
+  document.getElementById('wl-cap').textContent = getWeekKey();
+  document.getElementById('week-nav').innerHTML = `
+    <button onclick="switchWeek(-1)" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--color-text-secondary);padding:0 6px">‹</button>
+    <span style="font-size:11px;font-weight:700;color:${isCurrentWeek?'#C2185B':'var(--color-text-secondary)'}">${wkLabel}</span>
+    <button onclick="switchWeek(1)" style="background:none;border:none;cursor:pointer;font-size:20px;padding:0 6px;color:${weekOffset>=0?'#ccc':'var(--color-text-secondary)'}" ${weekOffset>=0?'disabled':''}>›</button>
+  `;
   const ag = AGENCIES.find(a => a.id === curAgency);
   document.getElementById('ag-tabs').innerHTML = AGENCIES.map(a =>
     `<button class="ag-tab${a.id===curAgency?' active':''}" style="background:${a.color}" onclick="switchAg('${a.id}')">${a.id}</button>`).join('');
