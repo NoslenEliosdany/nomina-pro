@@ -680,5 +680,4 @@ function renderHist() {
 }
 
 // ── INIT ──────────────────────────────────────────────
-localStorage.removeItem('nomina_agencies');
 loadAgencies(); loadState(); renderAll();
