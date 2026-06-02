@@ -158,6 +158,30 @@ function switchWeek(dir) {
 }
 
 // ── CÁLCULOS ──────────────────────────────────────────
+
+// Devuelve las fechas reales de cada día de la semana actual
+function getWeekDates() {
+  const dates = [];
+  const wk = getWeekKey(); // lunes de esta semana
+  const mon = new Date(wk + 'T12:00:00');
+  for (let i = 0; i < 6; i++) {
+    const d = new Date(mon);
+    d.setDate(mon.getDate() + i);
+    dates.push(d);
+  }
+  return dates;
+}
+function fmtDayBtn(di) {
+  const dates = getWeekDates();
+  const d = dates[di];
+  const today = new Date();
+  const isToday = d.toDateString() === today.toDateString();
+  const isPast = d < today && !isToday;
+  const day = d.getDate();
+  const mon = d.toLocaleDateString('es-MX', { month:'short' });
+  return { label: `${DAYS_SHORT[di]} ${day} ${mon}`, isToday, isPast };
+}
+
 function getDayData(agId, m, di) { return state[agId]?.[m]?.days?.[di] || { manual:0, pays:[] }; }
 function setDayData(agId, m, di, data) {
   if (!state[agId]) state[agId] = {};
@@ -211,10 +235,17 @@ function renderSearch() {
     const dayData = getDayData(r.agId, r.name, selDay);
     const isOpen = openMembers[mk];
     const dir = DIRECTORIO[r.name];
-    const dayBtns = DAYS_SHORT.map((d, di) => `
-      <button class="day-sel-btn${di===selDay?' active':''}"
-        style="${di===selDay?'background:'+r.color+';color:#fff;border-color:'+r.color:''}"
-        onclick="qSelDay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${di})">${d}</button>`).join('');
+    const dayBtns = DAYS_SHORT.map((d, di) => {
+      const { label, isToday, isPast } = fmtDayBtn(di);
+      const isSelected = di === selDay;
+      const style = isSelected
+        ? `background:${r.color};color:#fff;border-color:${r.color}`
+        : isToday
+          ? `border-color:${r.color};color:${r.color};font-weight:700`
+          : isPast ? 'opacity:.6' : '';
+      return `<button class="day-sel-btn${isSelected?' active':''}" style="${style}"
+        onclick="qSelDay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${di})">${label}${isToday?' •':''}</button>`;
+    }).join('');
     const paysHtml = dayData.pays.map((p, pi) => `
       <div class="quick-pay-row">
         <span class="day-badge" style="background:${r.color}">${DAYS_SHORT[selDay]}</span>
