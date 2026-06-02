@@ -278,7 +278,7 @@ function renderSearch() {
         ${dirMini}
         <div class="day-selector">${dayBtns}</div>
         <div class="quick-input-row">
-          <input type="number" placeholder="Monto del pago" id="qinput-${r.agId}-${r.mi}" min="0">
+          <input type="number" placeholder="Monto del pago" id="qinput-${r.agId.replace(/\s+/g,'_')}-${r.mi}" min="0">
           <button class="add-quick-btn" style="background:${r.color}"
             onclick="qAddPay('${r.agId}','${r.name.replace(/'/g,"\\'")}',${r.mi})">+ Agregar</button>
         </div>
@@ -302,11 +302,13 @@ function toggleQuick(agId, m) { const mk=memberKey(agId,m); openMembers[mk]=!ope
 function qSelDay(agId, m, di) { quickDays[memberKey(agId,m)]=di; openMembers[memberKey(agId,m)]=true; renderSearch(); }
 function qAddPay(agId, m, mi) {
   const selDay = quickDays[memberKey(agId,m)]!==undefined ? quickDays[memberKey(agId,m)] : curDay;
-  const input = document.getElementById('qinput-'+agId+'-'+mi);
+  const inputId = 'qinput-'+agId.replace(/\s+/g,'_')+'-'+mi;
+  const input = document.getElementById(inputId);
   const val = parseFloat(input?.value)||0;
   if (val<=0) { input&&input.focus(); return; }
   const d = getDayData(agId,m,selDay); d.pays.push(val); d.manual=0;
   setDayData(agId,m,selDay,d); saveState();
+  if(input) input.value = '';
   openMembers[memberKey(agId,m)]=true; renderSearch(); renderCaptura();
 }
 function qUpdatePay(agId,m,di,pi,val) { const d=getDayData(agId,m,di); d.pays[pi]=parseFloat(val)||0; setDayData(agId,m,di,d); saveState(); renderSearch(); }
