@@ -8,15 +8,11 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
 <div class="app">
 
   <!-- BÚSQUEDA RÁPIDA -->
   <div class="page active" id="page-search">
-    <div class="topbar">
-      <h1>Búsqueda rápida</h1>
-      <span class="week-pill" id="wl-search"></span>
-    </div>
+    <div class="topbar"><h1>Búsqueda rápida</h1><span class="week-pill" id="wl-search"></span></div>
     <div class="search-box">
       <i class="ti ti-search search-icon"></i>
       <input type="text" id="search-input" placeholder="Buscar asesor o gerente..." oninput="renderSearch()" autocomplete="off">
@@ -24,12 +20,9 @@
     <div id="search-results"></div>
   </div>
 
-  <!-- CAPTURA -->
+  <!-- GERENCIA -->
   <div class="page" id="page-captura">
-    <div class="topbar">
-      <h1>Gerencia</h1>
-      <span class="week-pill" id="wl-cap"></span>
-    </div>
+    <div class="topbar"><h1>Gerencia</h1><span class="week-pill" id="wl-cap"></span></div>
     <div id="week-nav" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;background:var(--color-background-primary);border-radius:10px;padding:6px;border:0.5px solid var(--color-border-tertiary)"></div>
     <div class="ag-tabs" id="ag-tabs"></div>
     <div class="day-tabs" id="day-tabs"></div>
@@ -40,6 +33,17 @@
       <button class="act-btn green" onclick="exportXLSX()">Exportar Excel</button>
     </div>
     <span class="reset-link" onclick="resetWeek()">Iniciar nueva semana</span>
+  </div>
+
+  <!-- REVISIÓN -->
+  <div class="page" id="page-revision">
+    <div class="topbar"><h1>Revisión</h1><span class="week-pill" id="wl-rev"></span></div>
+    <div id="rev-day-tabs" style="display:flex;gap:4px;margin-bottom:10px;overflow-x:auto;padding-bottom:2px"></div>
+    <div class="search-box">
+      <i class="ti ti-search search-icon"></i>
+      <input type="text" id="rev-search" placeholder="Buscar asesor o monto..." oninput="renderRevision()" autocomplete="off">
+    </div>
+    <div id="rev-results"></div>
   </div>
 
   <!-- DIRECTORIO -->
@@ -67,17 +71,11 @@
     <div id="dash-ranking"></div>
   </div>
 
-  <!-- HISTORIAL -->
-  <div class="page" id="page-hist">
-    <div class="topbar"><h1>Historial</h1></div>
-    <div id="hist-content"></div>
-  </div>
-
   <!-- CONFIG -->
   <div class="page" id="page-cfg">
     <div class="topbar"><h1>Configuración</h1></div>
     <div class="cfg-section">
-      <div class="cfg-title"><i class="ti ti-users"></i> Equipos por agencia</div>
+      <div class="cfg-title"><i class="ti ti-users"></i> Equipos por gerencia</div>
       <div id="cfg-agencies"></div>
       <button class="save-btn" style="background:#1B5E20" onclick="saveConfig()">Guardar cambios</button>
     </div>
@@ -88,7 +86,7 @@
 <nav class="nav">
   <button class="nav-btn active" onclick="showPage('search',this)"><i class="ti ti-bolt"></i>Rápido</button>
   <button class="nav-btn" onclick="showPage('captura',this)"><i class="ti ti-clipboard-list"></i>Gerencia</button>
-  <button class="nav-btn" onclick="showPage('directorio',this)"><i class="ti ti-address-book"></i>Directorio</button>
+  <button class="nav-btn" onclick="showPage('revision',this)"><i class="ti ti-checklist"></i>Revisión</button>
   <button class="nav-btn" onclick="showPage('dash',this)"><i class="ti ti-chart-bar"></i>Dashboard</button>
   <button class="nav-btn" onclick="showPage('cfg',this)"><i class="ti ti-settings"></i>Config</button>
 </nav>
