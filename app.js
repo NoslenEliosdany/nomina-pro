@@ -173,9 +173,11 @@ async function loadAgencies() {
   AGENCIES = local ? JSON.parse(local) : JSON.parse(JSON.stringify(DEFAULT_AGENCIES));
   // 2. Sincroniza con Firebase en segundo plano
   fbGet('agencies').then(remote => {
-    if (remote) {
+    if (remote && JSON.stringify(remote) !== JSON.stringify(AGENCIES)) {
       AGENCIES = remote;
       localStorage.setItem('nomina_agencies', JSON.stringify(AGENCIES));
+      initStateMembers();
+      renderAll();
     }
   });
 }
@@ -190,17 +192,24 @@ function emptyMember() { return { days: DAYS.map(() => ({ manual:0, pays:[] })) 
 async function loadState() {
   const wk  = getWeekKey();
   const key = 'nomina_' + wk;
+
   // 1. Carga local inmediata
   const local = localStorage.getItem(key);
   state = local ? JSON.parse(local) : { week:wk };
+  initStateMembers();
+
   // 2. Sincroniza con Firebase en segundo plano
   fbGet('weeks/' + wk.replace(/-/g,'_')).then(remote => {
     if (remote) {
       state = remote;
       localStorage.setItem(key, JSON.stringify(state));
+      initStateMembers();
       renderAll();
     }
   });
+}
+
+function initStateMembers() {
   AGENCIES.forEach(ag => {
     if (!state[ag.id]) state[ag.id] = {};
     ag.members.forEach(m => {
