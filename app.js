@@ -168,46 +168,23 @@ function showToast(msg) {
 }
 
 async function loadAgencies() {
-  // 1. Carga local inmediata
   const local = localStorage.getItem('nomina_agencies');
   AGENCIES = local ? JSON.parse(local) : JSON.parse(JSON.stringify(DEFAULT_AGENCIES));
-  // 2. Sincroniza con Firebase en segundo plano
-  fbGet('agencies').then(remote => {
-    if (remote && JSON.stringify(remote) !== JSON.stringify(AGENCIES)) {
+  try {
+    const remote = await fbGet('agencies');
+    if (remote) {
       AGENCIES = remote;
       localStorage.setItem('nomina_agencies', JSON.stringify(AGENCIES));
-      initStateMembers();
-      renderAll();
     }
-  });
+  } catch(e) {}
 }
 
 async function saveAgencies() {
   localStorage.setItem('nomina_agencies', JSON.stringify(AGENCIES));
-  fbSet('agencies', AGENCIES); // async, no esperamos
+  fbSet('agencies', AGENCIES);
 }
 
 function emptyMember() { return { days: DAYS.map(() => ({ manual:0, pays:[] })) }; }
-
-async function loadState() {
-  const wk  = getWeekKey();
-  const key = 'nomina_' + wk;
-
-  // 1. Carga local inmediata
-  const local = localStorage.getItem(key);
-  state = local ? JSON.parse(local) : { week:wk };
-  initStateMembers();
-
-  // 2. Sincroniza con Firebase en segundo plano
-  fbGet('weeks/' + wk.replace(/-/g,'_')).then(remote => {
-    if (remote) {
-      state = remote;
-      localStorage.setItem(key, JSON.stringify(state));
-      initStateMembers();
-      renderAll();
-    }
-  });
-}
 
 function initStateMembers() {
   AGENCIES.forEach(ag => {
@@ -220,10 +197,25 @@ function initStateMembers() {
   });
 }
 
+async function loadState() {
+  const wk  = getWeekKey();
+  const key = 'nomina_' + wk;
+  const local = localStorage.getItem(key);
+  state = local ? JSON.parse(local) : { week:wk };
+  try {
+    const remote = await fbGet('weeks/' + wk.replace(/-/g,'_'));
+    if (remote) {
+      state = remote;
+      localStorage.setItem(key, JSON.stringify(state));
+    }
+  } catch(e) {}
+  initStateMembers();
+}
+
 async function saveState() {
   const wk = getWeekKey();
   localStorage.setItem('nomina_' + wk, JSON.stringify(state));
-  fbSet('weeks/' + wk.replace(/-/g,'_'), state); // async, no esperamos
+  fbSet('weeks/' + wk.replace(/-/g,'_'), state);
 }
 
 async function switchWeek(dir) {
