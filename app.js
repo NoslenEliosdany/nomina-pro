@@ -170,18 +170,11 @@ function showToast(msg) {
 async function loadAgencies() {
   const local = localStorage.getItem('nomina_agencies');
   AGENCIES = local ? JSON.parse(local) : JSON.parse(JSON.stringify(DEFAULT_AGENCIES));
-  try {
-    const remote = await fbGet('agencies');
-    if (remote) {
-      AGENCIES = remote;
-      localStorage.setItem('nomina_agencies', JSON.stringify(AGENCIES));
-    }
-  } catch(e) {}
 }
 
 async function saveAgencies() {
   localStorage.setItem('nomina_agencies', JSON.stringify(AGENCIES));
-  fbSet('agencies', AGENCIES);
+  try { fbSet('agencies', AGENCIES); } catch(e) {}
 }
 
 function emptyMember() { return { days: DAYS.map(() => ({ manual:0, pays:[] })) }; }
@@ -202,26 +195,41 @@ async function loadState() {
   const key = 'nomina_' + wk;
   const local = localStorage.getItem(key);
   state = local ? JSON.parse(local) : { week:wk };
-  try {
-    const remote = await fbGet('weeks/' + wk.replace(/-/g,'_'));
+  initStateMembers();
+  // Sync Firebase en segundo plano sin bloquear
+  fbGet('weeks/' + wk.replace(/-/g,'_')).then(remote => {
     if (remote) {
       state = remote;
       localStorage.setItem(key, JSON.stringify(state));
+      initStateMembers();
+      renderAll();
     }
-  } catch(e) {}
-  initStateMembers();
+  }).catch(() => {});
 }
 
 async function saveState() {
   const wk = getWeekKey();
   localStorage.setItem('nomina_' + wk, JSON.stringify(state));
-  fbSet('weeks/' + wk.replace(/-/g,'_'), state);
+  try { fbSet('weeks/' + wk.replace(/-/g,'_'), state); } catch(e) {}
 }
 
 async function switchWeek(dir) {
   weekOffset += dir;
-  await loadState();
+  const wk  = getWeekKey();
+  const key = 'nomina_' + wk;
+  const local = localStorage.getItem(key);
+  state = local ? JSON.parse(local) : { week:wk };
+  initStateMembers();
   renderAll();
+  // Sync Firebase
+  fbGet('weeks/' + wk.replace(/-/g,'_')).then(remote => {
+    if (remote) {
+      state = remote;
+      localStorage.setItem(key, JSON.stringify(state));
+      initStateMembers();
+      renderAll();
+    }
+  }).catch(() => {});
 }
 
 // ── CÁLCULOS ──────────────────────────────────────────
