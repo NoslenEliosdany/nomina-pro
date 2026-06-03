@@ -124,7 +124,8 @@ body{font-family:Arial,sans-serif;font-size:13px;background:var(--color-backgrou
 .dir-mini-nombre{font-size:11px;color:var(--color-text-secondary);line-height:1.7}
 .dir-mini-tels{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
 
-/* ════ DIRECTORIO ════ */
+/* ════ SPIN ════ */
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .dir-group{margin-bottom:20px}
 .dir-group-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid currentColor}
 .dir-group-header span{font-size:13px;font-weight:700;letter-spacing:.5px}
