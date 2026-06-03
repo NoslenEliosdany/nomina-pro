@@ -643,8 +643,18 @@ function renderCfg() {
 }
 function rmMember(ai,mi){AGENCIES[ai].members.splice(mi,1);renderCfg();}
 function addMember(ai){AGENCIES[ai].members.push('Nuevo asesor');renderCfg();}
-async function saveConfig(){ await saveAgencies(); await loadState(); renderAll(); alert('¡Guardado!'); }
-
+async function saveConfig(){
+  const btn = document.querySelector('.save-btn');
+  const orig = btn.textContent;
+  btn.textContent = 'Guardando...';
+  btn.disabled = true;
+  await saveAgencies();
+  await loadState();
+  renderAll();
+  btn.textContent = '✅ Guardado';
+  btn.style.background = '#1B5E20';
+  setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 2000);
+}
 // ── EXPORTACIÓN ───────────────────────────────────────
 function copyWA() {
   const wk=getWeekKey(); let txt=`*NÓMINAS — Semana ${wk}*\n\n`;
