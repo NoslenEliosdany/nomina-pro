@@ -133,7 +133,7 @@ function fmtDate(wk) {
 }
 function memberKey(agId, m) { return agId + '::' + m; }
 
-// ── PERSISTENCIA (Firebase) ───────────────────────────
+// ── PERSISTENCIA (Local + Firebase sync) ─────────────
 const DB_URL = 'https://nomina-pro-12291-default-rtdb.firebaseio.com';
 
 async function fbGet(path) {
@@ -149,23 +149,58 @@ async function fbSet(path, data) {
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify(data)
     });
-  } catch(e) { console.error('Firebase write error:', e); }
+    showToast('✅ Guardado en la nube');
+  } catch(e) { showToast('⚠️ Sin conexión, guardado local'); }
+}
+
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#323232;color:#fff;padding:8px 16px;border-radius:20px;font-size:12px;z-index:999;opacity:0;transition:opacity .3s;white-space:nowrap';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.style.opacity = '0', 2000);
 }
 
 async function loadAgencies() {
-  const remote = await fbGet('agencies');
-  AGENCIES = remote ? remote : JSON.parse(JSON.stringify(DEFAULT_AGENCIES));
+  // 1. Carga local inmediata
+  const local = localStorage.getItem('nomina_agencies');
+  AGENCIES = local ? JSON.parse(local) : JSON.parse(JSON.stringify(DEFAULT_AGENCIES));
+  // 2. Sincroniza con Firebase en segundo plano
+  fbGet('agencies').then(remote => {
+    if (remote) {
+      AGENCIES = remote;
+      localStorage.setItem('nomina_agencies', JSON.stringify(AGENCIES));
+    }
+  });
 }
+
 async function saveAgencies() {
-  await fbSet('agencies', AGENCIES);
+  localStorage.setItem('nomina_agencies', JSON.stringify(AGENCIES));
+  fbSet('agencies', AGENCIES); // async, no esperamos
 }
 
 function emptyMember() { return { days: DAYS.map(() => ({ manual:0, pays:[] })) }; }
 
 async function loadState() {
   const wk  = getWeekKey();
-  const raw = await fbGet('weeks/' + wk.replace(/-/g,'_'));
-  state = raw ? raw : { week:wk };
+  const key = 'nomina_' + wk;
+  // 1. Carga local inmediata
+  const local = localStorage.getItem(key);
+  state = local ? JSON.parse(local) : { week:wk };
+  // 2. Sincroniza con Firebase en segundo plano
+  fbGet('weeks/' + wk.replace(/-/g,'_')).then(remote => {
+    if (remote) {
+      state = remote;
+      localStorage.setItem(key, JSON.stringify(state));
+      renderAll();
+    }
+  });
   AGENCIES.forEach(ag => {
     if (!state[ag.id]) state[ag.id] = {};
     ag.members.forEach(m => {
@@ -175,9 +210,11 @@ async function loadState() {
     });
   });
 }
+
 async function saveState() {
-  const wk = getWeekKey().replace(/-/g,'_');
-  await fbSet('weeks/' + wk, state);
+  const wk = getWeekKey();
+  localStorage.setItem('nomina_' + wk, JSON.stringify(state));
+  fbSet('weeks/' + wk.replace(/-/g,'_'), state); // async, no esperamos
 }
 
 async function switchWeek(dir) {
@@ -722,7 +759,6 @@ async function renderHist() {
 
 // ── INIT ──────────────────────────────────────────────
 async function init() {
-  document.getElementById('search-results').innerHTML = '<div class="search-empty" style="padding:40px 0"><i class="ti ti-loader" style="font-size:32px;display:block;margin-bottom:8px;animation:spin 1s linear infinite" aria-hidden="true"></i>Cargando datos...</div>';
   await loadAgencies();
   await loadState();
   renderAll();
