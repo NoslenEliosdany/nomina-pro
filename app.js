@@ -88,26 +88,6 @@ const DIRECTORIO = {
   'EL CHAPO':       { nombres:['KELLY OLVERA','ARTURO SALINAS'], lab:['5534956967'], per:['4242562046'], ag:'WUERO' },
 };
 
-// ── FIREBASE ──────────────────────────────────────────
-const DB_URL = 'https://nomina-pro-12291-default-rtdb.firebaseio.com';
-
-function fbGet(path) {
-  return fetch(`${DB_URL}/${path}.json`).then(r => r.json()).catch(() => null);
-}
-function fbSet(path, data) {
-  return fetch(`${DB_URL}/${path}.json`, {
-    method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)
-  }).then(() => showToast('☁️ Guardado')).catch(() => showToast('⚠️ Solo local'));
-}
-function showToast(msg) {
-  let t = document.getElementById('fb-toast');
-  if (!t) { t = document.createElement('div'); t.id='fb-toast';
-    t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#323232;color:#fff;padding:7px 16px;border-radius:20px;font-size:12px;z-index:9999;transition:opacity .3s;pointer-events:none';
-    document.body.appendChild(t); }
-  t.textContent = msg; t.style.opacity='1';
-  clearTimeout(t._t); t._t = setTimeout(() => t.style.opacity='0', 2000);
-}
-
 // ── ESTADO GLOBAL ─────────────────────────────────────
 let AGENCIES = [];
 let state    = {};
@@ -142,23 +122,14 @@ function fmtDate(wk) {
 }
 function memberKey(agId,m) { return agId+'::'+m; }
 
-// ── PERSISTENCIA ──────────────────────────────────────
+// ── PERSISTENCIA (localStorage) ──────────────────────
 function loadAgencies() {
   const s = localStorage.getItem('nomina_agencies');
   AGENCIES = s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_AGENCIES));
-  // Sync Firebase en fondo
-  fbGet('agencies').then(r => {
-    if(r && Array.isArray(r)) {
-      AGENCIES = r;
-      localStorage.setItem('nomina_agencies', JSON.stringify(AGENCIES));
-    }
-  });
 }
 function saveAgencies() {
   localStorage.setItem('nomina_agencies', JSON.stringify(AGENCIES));
-  fbSet('agencies', AGENCIES);
 }
-
 function emptyMember() { return { days: DAYS.map(()=>({manual:0,pays:[]})) }; }
 function initStateMembers() {
   AGENCIES.forEach(ag => {
@@ -171,33 +142,28 @@ function initStateMembers() {
   });
 }
 function loadState() {
-  const wk = getWeekKey(), key='nomina_'+wk;
-  const s = localStorage.getItem(key);
-  state = s ? JSON.parse(s) : {week:wk};
-  initStateMembers();
-  // Sync Firebase en fondo
-  fbGet('weeks/'+wk.replace(/-/g,'_')).then(r => {
-    if(r && typeof r==='object' && Object.keys(r).length > 1) {
-      state=r; localStorage.setItem(key,JSON.stringify(state));
-      initStateMembers(); renderAll();
-    }
-  });
-}
-function saveState() {
-  const wk=getWeekKey();
-  localStorage.setItem('nomina_'+wk, JSON.stringify(state));
-  fbSet('weeks/'+wk.replace(/-/g,'_'), state);
-}
-function switchWeek(dir) {
-  weekOffset+=dir;
   const wk=getWeekKey(), key='nomina_'+wk;
   const s=localStorage.getItem(key);
   state=s?JSON.parse(s):{week:wk};
-  initStateMembers(); renderAll();
-  fbGet('weeks/'+wk.replace(/-/g,'_')).then(r=>{
-    if(r&&typeof r==='object'&&Object.keys(r).length>1){state=r;localStorage.setItem(key,JSON.stringify(state));initStateMembers();renderAll();}
-  });
+  initStateMembers();
 }
+function saveState() {
+  localStorage.setItem('nomina_'+getWeekKey(), JSON.stringify(state));
+}
+function switchWeek(dir) {
+  weekOffset+=dir;
+  loadState();
+  renderAll();
+}
+function showToast(msg) {
+  let t=document.getElementById('fb-toast');
+  if(!t){t=document.createElement('div');t.id='fb-toast';
+    t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#323232;color:#fff;padding:7px 16px;border-radius:20px;font-size:12px;z-index:9999;transition:opacity .3s;pointer-events:none';
+    document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',2000);
+}
+
 
 // ── CÁLCULOS ──────────────────────────────────────────
 function getWeekDates() {
