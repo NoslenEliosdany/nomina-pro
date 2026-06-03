@@ -177,7 +177,7 @@ function loadState() {
   initStateMembers();
   // Sync Firebase en fondo
   fbGet('weeks/'+wk.replace(/-/g,'_')).then(r => {
-    if(r && typeof r==='object') {
+    if(r && typeof r==='object' && Object.keys(r).length > 1) {
       state=r; localStorage.setItem(key,JSON.stringify(state));
       initStateMembers(); renderAll();
     }
@@ -195,7 +195,7 @@ function switchWeek(dir) {
   state=s?JSON.parse(s):{week:wk};
   initStateMembers(); renderAll();
   fbGet('weeks/'+wk.replace(/-/g,'_')).then(r=>{
-    if(r&&typeof r==='object'){state=r;localStorage.setItem(key,JSON.stringify(state));initStateMembers();renderAll();}
+    if(r&&typeof r==='object'&&Object.keys(r).length>1){state=r;localStorage.setItem(key,JSON.stringify(state));initStateMembers();renderAll();}
   });
 }
 
