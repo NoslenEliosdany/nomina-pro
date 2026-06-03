@@ -133,17 +133,39 @@ function fmtDate(wk) {
 }
 function memberKey(agId, m) { return agId + '::' + m; }
 
-// ── PERSISTENCIA ──────────────────────────────────────
-function loadAgencies() {
-  const s = localStorage.getItem('nomina_agencies');
-  AGENCIES = s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_AGENCIES));
+// ── PERSISTENCIA (Firebase) ───────────────────────────
+const DB_URL = 'https://nomina-pro-12291-default-rtdb.firebaseio.com';
+
+async function fbGet(path) {
+  try {
+    const r = await fetch(`${DB_URL}/${path}.json`);
+    return await r.json();
+  } catch(e) { return null; }
 }
-function saveAgencies() { localStorage.setItem('nomina_agencies', JSON.stringify(AGENCIES)); }
+async function fbSet(path, data) {
+  try {
+    await fetch(`${DB_URL}/${path}.json`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    });
+  } catch(e) { console.error('Firebase write error:', e); }
+}
+
+async function loadAgencies() {
+  const remote = await fbGet('agencies');
+  AGENCIES = remote ? remote : JSON.parse(JSON.stringify(DEFAULT_AGENCIES));
+}
+async function saveAgencies() {
+  await fbSet('agencies', AGENCIES);
+}
+
 function emptyMember() { return { days: DAYS.map(() => ({ manual:0, pays:[] })) }; }
-function loadState() {
-  const wk = getWeekKey();
-  const raw = localStorage.getItem('nomina_' + wk);
-  state = raw ? JSON.parse(raw) : { week:wk };
+
+async function loadState() {
+  const wk  = getWeekKey();
+  const raw = await fbGet('weeks/' + wk.replace(/-/g,'_'));
+  state = raw ? raw : { week:wk };
   AGENCIES.forEach(ag => {
     if (!state[ag.id]) state[ag.id] = {};
     ag.members.forEach(m => {
@@ -153,11 +175,14 @@ function loadState() {
     });
   });
 }
-function saveState() { localStorage.setItem('nomina_' + getWeekKey(), JSON.stringify(state)); }
+async function saveState() {
+  const wk = getWeekKey().replace(/-/g,'_');
+  await fbSet('weeks/' + wk, state);
+}
 
-function switchWeek(dir) {
+async function switchWeek(dir) {
   weekOffset += dir;
-  loadState();
+  await loadState();
   renderAll();
 }
 
@@ -431,7 +456,7 @@ function capSetManual(agId,m,di,val){const d=getDayData(agId,m,di);d.manual=pars
 function capAddPay(agId,m,di){const d=getDayData(agId,m,di);d.pays.push(0);d.manual=0;setDayData(agId,m,di,d);saveState();renderCaptura();}
 function capDelPay(agId,m,di,pi){const d=getDayData(agId,m,di);d.pays.splice(pi,1);setDayData(agId,m,di,d);saveState();renderCaptura();}
 function capUpdatePay(agId,m,di,pi,val){const d=getDayData(agId,m,di);d.pays[pi]=parseFloat(val)||0;setDayData(agId,m,di,d);saveState();renderCaptura();}
-function resetWeek(){if(!confirm('¿Iniciar nueva semana? Los datos se guardarán en historial.'))return;localStorage.removeItem('nomina_'+getWeekKey());loadState();renderAll();}
+async function resetWeek(){if(!confirm('¿Iniciar nueva semana? Los datos se guardarán en historial.'))return;await fbSet('weeks/'+getWeekKey().replace(/-/g,'_'),null);await loadState();renderAll();}
 
 // ── DASHBOARD ─────────────────────────────────────────
 function renderDash() {
@@ -618,7 +643,7 @@ function renderCfg() {
 }
 function rmMember(ai,mi){AGENCIES[ai].members.splice(mi,1);renderCfg();}
 function addMember(ai){AGENCIES[ai].members.push('Nuevo asesor');renderCfg();}
-function saveConfig(){saveAgencies();loadState();renderAll();alert('¡Guardado!');}
+async function saveConfig(){ await saveAgencies(); await loadState(); renderAll(); alert('¡Guardado!'); }
 
 // ── EXPORTACIÓN ───────────────────────────────────────
 function copyWA() {
@@ -657,22 +682,28 @@ function showPage(name, btn) {
   if(name==='hist') renderHist();
   if(name==='cfg') renderCfg();
   if(name==='directorio') renderDirectorio();
-  if(name==='revision') renderRevision();
-}
+  if(name==='revision') renderRevision();}
 function renderAll(){renderSearch();renderCaptura();}
 
 // ── HISTORIAL ─────────────────────────────────────────
-function renderHist() {
-  const keys=[];
-  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('nomina_2'))keys.push(k);}
-  keys.sort().reverse();
-  if(!keys.length){document.getElementById('hist-content').innerHTML='<p style="padding:20px 0;color:var(--color-text-secondary)">No hay semanas anteriores.</p>';return;}
-  document.getElementById('hist-content').innerHTML=keys.map(k=>{
-    const wk=k.replace('nomina_','');let dat;try{dat=JSON.parse(localStorage.getItem(k));}catch{return '';}
-    let totP=0;
-    const rows=AGENCIES.map(ag=>{
-      const prod=ag.members.reduce((s,m)=>{const days=dat[ag.id]?.[m]?.days||[];return s+days.reduce((ds,d)=>{const ps=(d.pays||[]).reduce((pp,p)=>pp+(parseFloat(p)||0),0);return ds+(ps>0?ps:(parseFloat(d.manual)||0));},0);},0);
-      totP+=prod;
+async function renderHist() {
+  document.getElementById('hist-content').innerHTML = '<div class="search-empty">Cargando...</div>';
+  const weeks = await fbGet('weeks');
+  if (!weeks) { document.getElementById('hist-content').innerHTML='<p style="padding:20px 0;color:var(--color-text-secondary)">No hay semanas anteriores.</p>'; return; }
+  const keys = Object.keys(weeks).sort().reverse();
+  document.getElementById('hist-content').innerHTML = keys.map(k => {
+    const wk  = k.replace(/_/g,'-');
+    const dat = weeks[k];
+    let totP  = 0;
+    const rows = AGENCIES.map(ag => {
+      const prod = ag.members.reduce((s,m) => {
+        const days = dat[ag.id]?.[m]?.days || [];
+        return s + days.reduce((ds,d) => {
+          const ps = (d.pays||[]).reduce((pp,p) => pp+(parseFloat(p)||0),0);
+          return ds+(ps>0?ps:(parseFloat(d.manual)||0));
+        },0);
+      },0);
+      totP += prod;
       return `<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${ag.color};margin-right:4px"></span>${ag.id}</td><td style="text-align:right">${fmt(prod)}</td></tr>`;
     }).join('');
     return `<div class="hist-card"><div class="hist-week">Semana del ${fmtDate(wk)}</div><table class="hist-table">${rows}<tr style="font-weight:700"><td>TOTAL</td><td style="text-align:right">${fmt(totP)}</td></tr></table></div>`;
@@ -680,4 +711,10 @@ function renderHist() {
 }
 
 // ── INIT ──────────────────────────────────────────────
-loadAgencies(); loadState(); renderAll();
+async function init() {
+  document.getElementById('search-results').innerHTML = '<div class="search-empty" style="padding:40px 0"><i class="ti ti-loader" style="font-size:32px;display:block;margin-bottom:8px;animation:spin 1s linear infinite" aria-hidden="true"></i>Cargando datos...</div>';
+  await loadAgencies();
+  await loadState();
+  renderAll();
+}
+init();
