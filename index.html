@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nómina Pro v5</title>
+<title>Nómina Pro v6.5</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
 /* ════ BASE ════ */
@@ -164,7 +164,7 @@ body{font-family:Arial,sans-serif;font-size:13px;background:var(--color-backgrou
   <!-- BÚSQUEDA RÁPIDA -->
   <div class="page active" id="page-search">
     <div class="topbar"><h1>Búsqueda rápida</h1><span class="week-pill" id="wl-search"></span></div>
-    <div style="font-size:9px;color:var(--color-text-secondary);text-align:right;margin-bottom:4px">v5</div>
+    <div style="font-size:9px;color:var(--color-text-secondary);text-align:right;margin-bottom:4px">v6.5</div>
     <div class="search-box">
       <i class="ti ti-search search-icon"></i>
       <input type="text" id="search-input" placeholder="Buscar asesor o gerente..." oninput="renderSearch()" autocomplete="off">
@@ -278,6 +278,8 @@ const DEFAULT_AGENCIES = [
     members:['MARCELINE','FLAME KING','GRUMOSA','BEEMO','FINN','MENTITA'] },
   { id:'WUERO',            color:'#F9A825', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
     members:['WUERO','VIUDA NEGRA','LA BARBIE','EL CHAPO'] },
+  { id:'BALONERAS',        color:'#2E7D32', ger_pct:.15, as_pct:.15, bono_pct:0, is_amix:false,
+    members:['GRIS','AMY'] },
 ];
 
 const DAYS       = ['Sábado','Lunes','Martes','Miércoles','Jueves','Viernes'];
@@ -342,6 +344,8 @@ const DIRECTORIO = {
   'VIUDA NEGRA':    { nombres:['ALEJANDRA CAROLINA GARCIA RAMOS','MARIA MAGDALENA'], lab:['5527529308'], per:['5517958269'], ag:'WUERO' },
   'LA BARBIE':      { nombres:['HECTOR GARCIA ROMERO','JUAN CARLOS ELIZALDE REYES VAZQUEZ'], lab:['5519333569'], per:['5583375354'], ag:'WUERO' },
   'EL CHAPO':       { nombres:['KELLY OLVERA','ARTURO SALINAS'], lab:['5534956967'], per:['4242562046'], ag:'WUERO' },
+  'GRIS':           { nombres:['GRIS'], lab:[], per:[], ag:'BALONERAS' },
+  'AMY':            { nombres:['AMY'], lab:[], per:[], ag:'BALONERAS' },
 };
 
 // ── ESTADO GLOBAL ─────────────────────────────────────
