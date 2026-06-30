@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nómina Pro v6.5</title>
+<title>Nómina Pro v8</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
 /* ════ BASE ════ */
@@ -164,7 +164,7 @@ body{font-family:Arial,sans-serif;font-size:13px;background:var(--color-backgrou
   <!-- BÚSQUEDA RÁPIDA -->
   <div class="page active" id="page-search">
     <div class="topbar"><h1>Búsqueda rápida</h1><span class="week-pill" id="wl-search"></span></div>
-    <div style="font-size:9px;color:var(--color-text-secondary);text-align:right;margin-bottom:4px">v6.5</div>
+    <div style="font-size:9px;color:var(--color-text-secondary);text-align:right;margin-bottom:4px">v8</div>
     <div class="search-box">
       <i class="ti ti-search search-icon"></i>
       <input type="text" id="search-input" placeholder="Buscar asesor o gerente..." oninput="renderSearch()" autocomplete="off">
@@ -271,7 +271,7 @@ const DEFAULT_AGENCIES = [
   { id:'OLIMPUS',          color:'#607D8B', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
     members:['OLIMPUS','ATENEA','ZEUS','POSEIDON','ARTEMISA','CRONNOS','AFRODITA'] },
   { id:'FENIX',            color:'#6A1B9A', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
-    members:['FENIX','PANTHER','DONATO','BLESSED','BLUE','FRIO','CHUCKY'] },
+    members:['VANELLOPE','PANTHER','DONATO','BLESSED','BLUE','FRIO','CHUCKY'] },
   { id:'MARVEL',           color:'#E65100', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
     members:['JEAN GREY','GROOT','DEADPOL','SCARLET WISH','CAPITANA MARVEL','MANTIS','BLACK WIDOW','WOLVERINE','BLACK PANTHER','CAPITAN AMERICA'] },
   { id:'MARCELINE',        color:'#0D47A1', ger_pct:.30, as_pct:.25, bono_pct:.05, is_amix:false,
@@ -317,7 +317,7 @@ const DIRECTORIO = {
   'ARTEMISA':       { nombres:['ADRIANA OVALLE DE LA ROSA','SANDRA DIAS FFERNANDES'], lab:['5522980373','5522693742'], per:[], ag:'OLIMPUS' },
   'CRONNOS':        { nombres:['GERMAN VARELA GARCIA'], lab:['5611705147'], per:[], ag:'OLIMPUS' },
   'AFRODITA':       { nombres:['ZULEMA BETZAI CHARMICHART ALMANZA'], lab:['5618520259'], per:[], ag:'OLIMPUS' },
-  'FENIX':          { nombres:['FENIX'], lab:[], per:[], ag:'FENIX' },
+  'VANELLOPE':      { nombres:['ANA CRISTINA ROSALES HERRERA','LAURA LETICIA JUAREZ JIMENEZ','LIZBETH RODRIGUEZ'], lab:['5573444688','5552749217','5527523754'], per:['5619501734'], ag:'FENIX' },
   'PANTHER':        { nombres:['ALEJANDRO ENCINAS NAJERA','GUILLERMO ISRAEL ALMORES MEDINA'], lab:['5535517393','5535020314'], per:['5582263437'], ag:'FENIX' },
   'DONATO':         { nombres:['RUBEN DONATO BARRON GARCIA','ABRAHAM TORRES MAGAÑA'], lab:['5551731315','5561885020'], per:['5615183872'], ag:'FENIX' },
   'BLESSED':        { nombres:['JESUS ANDRES ORTIZ GOMEZ','RAFAEL MONTES PONCE','ABELARDO LEYVA RODRIGUEZ'], lab:['5638032077','5511990458','5656024111'], per:['5560063089'], ag:'FENIX' },
@@ -383,7 +383,15 @@ function fmtDate(wk) {
 function memberKey(agId,m) { return agId+'::'+m; }
 
 // ── PERSISTENCIA (localStorage) ──────────────────────
+const APP_VERSION = '6.5';
+
 function loadAgencies() {
+  const savedVersion = localStorage.getItem('nomina_version');
+  if (savedVersion !== APP_VERSION) {
+    // Nueva versión — resetea agencias con los defaults nuevos
+    localStorage.removeItem('nomina_agencies');
+    localStorage.setItem('nomina_version', APP_VERSION);
+  }
   const s = localStorage.getItem('nomina_agencies');
   AGENCIES = s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_AGENCIES));
 }
@@ -451,17 +459,25 @@ function getAgencyProd(agId) {
   return ag?ag.members.reduce((s,m)=>s+getWeekTotal(agId,m),0):0;
 }
 function getGerentePay(ag) {
-  const agProd=getAgencyProd(ag.id); if(agProd===0) return 0;
-  const gp=getWeekTotal(ag.id,ag.members[0]);
-  if(ag.is_amix){const op=AGENCIES.filter(a=>!a.is_amix).reduce((s,a)=>s+getAgencyProd(a.id),0);return gp*ag.ger_pct+op*ag.bono_pct;}
-  const ap=ag.members.slice(1).reduce((s,m)=>s+getWeekTotal(ag.id,m),0);
-  return gp*ag.ger_pct+ap*ag.bono_pct;
+  const agProd = getAgencyProd(ag.id); if(agProd===0) return 0;
+  const gp = getWeekTotal(ag.id, ag.members[0]);
+  if(ag.is_amix) {
+    const ap = ag.members.slice(1).reduce((s,m)=>s+getWeekTotal(ag.id,m),0);
+    return gp * 0.30 + ap * 0.10;
+  }
+  if(ag.id === 'BALONERAS') return 0;
+  const ap = ag.members.slice(1).reduce((s,m)=>s+getWeekTotal(ag.id,m),0);
+  return gp * 0.25 + ap * 0.05;
 }
 function getBono(ag) {
-  if(ag.is_amix) return AGENCIES.filter(a=>!a.is_amix).reduce((s,a)=>s+getAgencyProd(a.id),0)*ag.bono_pct;
-  return ag.members.slice(1).reduce((s,m)=>s+getWeekTotal(ag.id,m),0)*ag.bono_pct;
+  if(ag.is_amix) return ag.members.slice(1).reduce((s,m)=>s+getWeekTotal(ag.id,m),0) * 0.10;
+  if(ag.id === 'BALONERAS') return 0;
+  return ag.members.slice(1).reduce((s,m)=>s+getWeekTotal(ag.id,m),0) * 0.05;
 }
-function getEquipoPay(ag) { return ag.members.slice(1).reduce((s,m)=>s+getWeekTotal(ag.id,m)*ag.as_pct,0); }
+function getEquipoPay(ag) {
+  if(ag.id === 'BALONERAS') return ag.members.reduce((s,m)=>s+getWeekTotal(ag.id,m)*0.15,0);
+  return ag.members.slice(1).reduce((s,m)=>s+getWeekTotal(ag.id,m)*ag.as_pct,0);
+}
 function allMembers() {
   const res=[];
   AGENCIES.forEach(ag=>ag.members.forEach((m,mi)=>res.push({agId:ag.id,color:ag.color,name:m,isGer:mi===0,ag,mi})));
@@ -476,7 +492,8 @@ function renderSearch() {
   const filtered=q?members.filter(r=>r.name.toLowerCase().includes(q)||r.agId.toLowerCase().includes(q)):members;
   if(!filtered.length){document.getElementById('search-results').innerHTML='<div class="search-empty">No se encontró ningún asesor</div>';return;}
   document.getElementById('search-results').innerHTML=filtered.map(r=>{
-    const wt=getWeekTotal(r.agId,r.name),pct=r.isGer?r.ag.ger_pct:r.ag.as_pct,nom=wt*pct;
+    const wt=getWeekTotal(r.agId,r.name);
+    const nom = r.isGer ? getGerentePay(r.ag) : wt * r.ag.as_pct;
     const initials=r.name.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
     const mk=memberKey(r.agId,r.name),selDay=quickDays[mk]!==undefined?quickDays[mk]:curDay;
     const dayData=getDayData(r.agId,r.name,selDay),isOpen=openMembers[mk],dir=DIRECTORIO[r.name];
@@ -722,12 +739,23 @@ function exportXLSX(){
   const wb=XLSX.utils.book_new();
   AGENCIES.forEach(ag=>{
     const rows=[['','SÁB','LUN','MAR','MIÉ','JUE','VIE','TOTAL','NÓMINA']];
-    ag.members.forEach((m,mi)=>{const dt=DAYS.map((_,di)=>getDayTotal(ag.id,m,di));const wk=dt.reduce((s,v)=>s+v,0);rows.push([m,...dt,wk,wk*(mi===0?ag.ger_pct:ag.as_pct)]);});
+    const teamTotal = ag.members.slice(1).reduce((s,m)=>s+getWeekTotal(ag.id,m),0);
+    ag.members.forEach((m,mi)=>{
+      const dt=DAYS.map((_,di)=>getDayTotal(ag.id,m,di));
+      const wk=dt.reduce((s,v)=>s+v,0);
+      let nom;
+      if(mi===0 && ag.id!=='BALONERAS'){
+        nom = getGerentePay(ag);
+      } else {
+        nom = wk * ag.as_pct;
+      }
+      rows.push([m,...dt,wk,nom]);
+    });
     rows.push([],[`TOTAL`,'','','','','','',getAgencyProd(ag.id)],[`NÓM. GERENTE`,'','','','','','',getGerentePay(ag)]);
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),ag.id.slice(0,31));
   });
-  const res=[['GERENCIA','TOTAL','NÓM. GERENTE','BONO','NÓM. EQUIPO']];
-  AGENCIES.forEach(ag=>res.push([ag.id,getAgencyProd(ag.id),getGerentePay(ag),getBono(ag),getEquipoPay(ag)]));
+  const res=[['GERENCIA','TOTAL','NÓM. GERENTE','NÓM. EQUIPO','TOTAL NÓMINAS']];
+  AGENCIES.forEach(ag=>res.push([ag.id,getAgencyProd(ag.id),getGerentePay(ag),getEquipoPay(ag),getGerentePay(ag)+getEquipoPay(ag)]));
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(res),'RESUMEN');
   XLSX.writeFile(wb,`Nomina_${getWeekKey()}.xlsx`);
 }
